@@ -3,26 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake News Game</title>
+    <title>Long-Form Puzzle Game</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .level {
+            border: 1px solid #bdc3c7;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Fake News Game!</h1>
-    <p>In this game, you will encounter various articles that you must evaluate and classify. 
-    New content will be added regularly, enhancing your experience.</p>
-
-    <h2>New Features:</h2>
-    <ul>
-        <li>More pieces and slots for the puzzle to challenge your skills!</li>
-        <li>Incorporation of levels to track your progress.</li>
-        <li>An analysis phase that provides you with detailed feedback on your piece selections.</li>
-    </ul>
-
-    <h2>Instructions:</h2>
-    <p>1. Read each article carefully.</p>
-    <p>2. Drag and drop the pieces into the correct slots.</p>
-    <p>3. Complete the levels and receive feedback to improve your understanding!</p>
-
-    <script src="script.js"></script>
+    <div class="container">
+        <h1>Welcome to the Long-Form Puzzle Game</h1>
+        <div class="level">
+            <h2>Level 1: Introduction</h2>
+            <p>Get ready for an immersive puzzle-solving experience!</p>
+            <button onclick="startLevel(1)">Start Level 1</button>
+        </div>
+        <div class="level">
+            <h2>Level 2: Intermediate Challenges</h2>
+            <p>Put your skills to the test with these intermediate puzzles.</p>
+            <button onclick="startLevel(2)">Start Level 2</button>
+        </div>
+        <div class="level">
+            <h2>Level 3: Expert Puzzles</h2>
+            <p>Only the best can solve these expert-level puzzles!</p>
+            <button onclick="startLevel(3)">Start Level 3</button>
+        </div>
+    </div>
 </body>
 </html>
