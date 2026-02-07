@@ -5,8 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎮 FAKE NEWS ROULETTE - 8-Bit Edition</title>
     <style>
-        /* ====== 8-BIT FONT ====== */
+        /* ====== 8-BIT RETRO FONT ====== */
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        :root {
+            /* RETRO COLOR PALETTE - Commodore 64 / CGA inspired */
+            --crt-green: #33ff33;
+            --crt-amber: #ffb000;
+            --retro-cyan: #00ffff;
+            --retro-magenta: #ff00ff;
+            --retro-yellow: #ffff00;
+            --retro-red: #ff5555;
+            --retro-blue: #5555ff;
+            --retro-white: #aaaaaa;
+            --bg-dark: #000000;
+            --bg-panel: #111111;
+            --border-color: #33ff33;
+        }
         
         * {
             margin: 0;
@@ -15,19 +31,21 @@
         }
         
         body {
-            background-color: #1a1a2e;
-            font-family: 'Press Start 2P', cursive;
+            background-color: var(--bg-dark);
+            font-family: 'Press Start 2P', 'VT323', monospace;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #00ff88;
+            color: var(--crt-green);
             image-rendering: pixelated;
+            image-rendering: crisp-edges;
             overflow-x: hidden;
+            position: relative;
         }
         
-        /* ====== SCANLINES EFFECT ====== */
+        /* ====== CRT MONITOR EFFECT ====== */
         body::before {
             content: '';
             position: fixed;
@@ -35,72 +53,121 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
+            background: 
+                /* Scanlines */
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0.3),
+                    rgba(0, 0, 0, 0.3) 1px,
+                    transparent 1px,
+                    transparent 3px
+                ),
+                /* Phosphor glow */
+                radial-gradient(
+                    ellipse at center,
+                    transparent 0%,
+                    rgba(0, 50, 0, 0.2) 70%,
+                    rgba(0, 20, 0, 0.5) 100%
+                );
             pointer-events: none;
             z-index: 1000;
         }
         
-        /* ====== MAIN CONTAINER ====== */
+        /* CRT Flicker effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            pointer-events: none;
+            z-index: 1001;
+            animation: crtFlicker 0.1s infinite;
+        }
+        
+        @keyframes crtFlicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+        
+        /* ====== RETRO CRT SCREEN CONTAINER ====== */
         .game-container {
-            max-width: 700px;
+            max-width: 640px;
             width: 95%;
             padding: 20px;
-            border: 8px solid #00ff88;
-            background: linear-gradient(180deg, #0f0f23 0%, #1a1a2e 100%);
+            background: var(--bg-dark);
+            border: 4px solid var(--crt-green);
+            position: relative;
             box-shadow: 
-                0 0 0 4px #1a1a2e,
-                0 0 0 8px #ff6b6b,
-                0 0 30px rgba(0, 255, 136, 0.3),
-                inset 0 0 60px rgba(0, 255, 136, 0.05);
+                0 0 20px var(--crt-green),
+                0 0 40px rgba(51, 255, 51, 0.3),
+                inset 0 0 100px rgba(51, 255, 51, 0.05);
+        }
+        
+        /* ASCII Art Border - Top */
+        .game-container::before {
+            content: '╔════════════════════════════════════════════════════════╗';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: var(--crt-green);
+            white-space: nowrap;
+            text-shadow: 0 0 5px var(--crt-green);
+            font-family: monospace;
+        }
+        
+        /* ASCII Art Border - Bottom */
+        .game-container::after {
+            content: '╚════════════════════════════════════════════════════════╝';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: var(--crt-green);
+            white-space: nowrap;
+            text-shadow: 0 0 5px var(--crt-green);
+            font-family: monospace;
+        }
+        
+        /* ====== RETRO TITLE ====== */
+        .title {
+            text-align: center;
+            margin-bottom: 15px;
             position: relative;
         }
         
-        /* ====== PIXEL CORNERS ====== */
-        .game-container::before,
-        .game-container::after {
-            content: '◼◼◼';
-            position: absolute;
-            color: #ff6b6b;
-            font-size: 8px;
-            letter-spacing: -2px;
-        }
-        .game-container::before { top: -20px; left: 10px; }
-        .game-container::after { bottom: -20px; right: 10px; }
-        
-        /* ====== TITLE ====== */
-        .title {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
         .title h1 {
-            font-size: 18px;
-            color: #ff6b6b;
+            font-size: 14px;
+            color: var(--retro-cyan);
             text-shadow: 
-                4px 4px 0 #8b0000,
-                -2px -2px 0 #ff0000;
-            animation: flicker 3s infinite;
-            margin-bottom: 10px;
+                2px 2px 0 var(--retro-magenta),
+                0 0 10px var(--retro-cyan),
+                0 0 20px var(--retro-cyan);
+            animation: textGlow 2s ease-in-out infinite;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
         }
         
         .title .subtitle {
-            font-size: 10px;
-            color: #ffd93d;
-            animation: blink 1s infinite;
+            font-size: 8px;
+            color: var(--retro-yellow);
+            animation: blink 1s step-end infinite;
+            text-shadow: 0 0 5px var(--retro-yellow);
         }
         
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.8; }
-            94% { opacity: 1; }
-            95% { opacity: 0.9; }
+        @keyframes textGlow {
+            0%, 100% { 
+                text-shadow: 2px 2px 0 var(--retro-magenta), 0 0 10px var(--retro-cyan);
+            }
+            50% { 
+                text-shadow: 2px 2px 0 var(--retro-magenta), 0 0 20px var(--retro-cyan), 0 0 30px var(--retro-cyan);
+            }
         }
         
         @keyframes blink {
@@ -108,127 +175,157 @@
             51%, 100% { opacity: 0; }
         }
         
-        /* ====== REVOLVER DISPLAY ====== */
+        /* ====== RETRO ASCII DECORATIONS ====== */
+        .ascii-decoration {
+            font-family: monospace;
+            font-size: 10px;
+            color: var(--crt-green);
+            text-align: center;
+            margin: 10px 0;
+            white-space: pre;
+            text-shadow: 0 0 5px var(--crt-green);
+            line-height: 1.2;
+        }
+        
+        /* ====== REVOLVER DISPLAY - Retro Style ====== */
         .revolver-section {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 20px 0;
-            gap: 10px;
+            margin: 15px 0;
+            gap: 8px;
+            padding: 10px;
+            border: 2px dashed var(--crt-green);
+            background: rgba(51, 255, 51, 0.05);
         }
         
         .chamber {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #666;
-            background: #333;
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--retro-white);
+            background: var(--bg-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            transition: all 0.3s;
+            font-size: 12px;
+            font-family: 'VT323', monospace;
+            transition: all 0.2s step-end;
+            color: var(--retro-white);
         }
         
         .chamber.loaded {
-            border-color: #ff6b6b;
-            background: #4a0000;
+            border-color: var(--retro-red);
+            background: #220000;
+            color: var(--retro-red);
+            box-shadow: 0 0 10px var(--retro-red);
         }
         
         .chamber.empty {
-            border-color: #00ff88;
-            background: #004400;
+            border-color: var(--crt-green);
+            background: #002200;
+            color: var(--crt-green);
+            box-shadow: 0 0 10px var(--crt-green);
         }
         
         .chamber.current {
-            transform: scale(1.2);
-            box-shadow: 0 0 20px #ffd93d;
-            border-color: #ffd93d;
+            transform: scale(1.15);
+            border-color: var(--retro-yellow);
+            box-shadow: 0 0 15px var(--retro-yellow);
+            animation: currentPulse 0.5s step-end infinite;
         }
         
-        /* ====== STATS BAR ====== */
+        @keyframes currentPulse {
+            0%, 50% { border-color: var(--retro-yellow); }
+            51%, 100% { border-color: var(--retro-cyan); }
+        }
+        
+        /* ====== RETRO STATS BAR ====== */
         .stats-bar {
             display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background: #0a0a15;
-            border: 4px solid #333;
-            margin-bottom: 20px;
-            font-size: 10px;
+            justify-content: space-around;
+            padding: 12px;
+            background: var(--bg-panel);
+            border: 2px solid var(--crt-green);
+            margin-bottom: 15px;
+            font-size: 9px;
         }
         
         .stat {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
         
         .stat-label {
-            color: #888;
+            color: var(--retro-cyan);
+            font-size: 8px;
         }
         
         .stat-value {
-            color: #ffd93d;
+            color: var(--retro-yellow);
+            text-shadow: 0 0 5px var(--retro-yellow);
+            font-size: 12px;
         }
         
         .lives {
-            color: #ff6b6b;
-            font-size: 14px;
-            letter-spacing: 3px;
+            color: var(--retro-red);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px var(--retro-red);
         }
         
-        /* ====== NEWS CARD ====== */
+        /* ====== RETRO NEWS CARD ====== */
         .news-card {
-            background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
-            border: 4px solid #4a4a6a;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: var(--bg-panel);
+            border: 2px solid var(--retro-cyan);
+            padding: 15px;
+            margin-bottom: 15px;
             position: relative;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
         }
         
         .news-card::before {
-            content: '';
+            content: '┌──────────────────────────────────────────┐';
             position: absolute;
-            top: -12px;
-            left: 15px;
-            background: #1a1a2e;
-            padding: 0 10px;
-            font-size: 8px;
-            color: #ffd93d;
+            top: -10px;
+            left: 5px;
+            font-size: 6px;
+            color: var(--retro-cyan);
+            font-family: monospace;
         }
         
         .news-number {
-            position: absolute;
-            top: -12px;
-            left: 15px;
-            background: #1a1a2e;
-            padding: 0 10px;
             font-size: 8px;
-            color: #ffd93d;
+            color: var(--retro-yellow);
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px var(--retro-yellow);
         }
         
         .news-source {
-            font-size: 8px;
-            color: #888;
+            font-size: 7px;
+            color: var(--retro-white);
             margin-bottom: 10px;
-            border-bottom: 2px dashed #333;
             padding-bottom: 8px;
+            border-bottom: 1px dotted var(--retro-cyan);
         }
         
         .news-headline {
-            font-size: 12px;
+            font-size: 10px;
             line-height: 1.8;
-            color: #e0e0e0;
-            margin-bottom: 15px;
+            color: var(--crt-green);
+            margin-bottom: 12px;
+            text-shadow: 0 0 3px var(--crt-green);
         }
         
         .news-details {
-            font-size: 9px;
-            color: #aaa;
+            font-size: 8px;
+            color: var(--retro-white);
             line-height: 1.6;
+            font-family: 'VT323', monospace;
         }
         
-        /* ====== BUTTONS ====== */
+        /* ====== RETRO BUTTONS ====== */
         .button-container {
             display: flex;
             gap: 15px;
@@ -237,15 +334,15 @@
         }
         
         .btn {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
-            padding: 15px 25px;
-            border: 4px solid;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            padding: 12px 20px;
+            border: 3px solid;
             cursor: pointer;
-            transition: all 0.1s;
+            transition: all 0.1s step-end;
             text-transform: uppercase;
             position: relative;
-            overflow: hidden;
+            background: var(--bg-dark);
         }
         
         .btn:hover {
@@ -253,53 +350,63 @@
         }
         
         .btn:active {
-            transform: translate(2px, 2px);
+            transform: translate(1px, 1px);
         }
         
         .btn-true {
-            background: #004400;
-            border-color: #00ff88;
-            color: #00ff88;
-            box-shadow: 4px 4px 0 #006600;
+            border-color: var(--crt-green);
+            color: var(--crt-green);
+            box-shadow: 
+                3px 3px 0 var(--crt-green),
+                0 0 10px rgba(51, 255, 51, 0.3);
         }
         
         .btn-true:hover {
-            background: #006600;
-            box-shadow: 6px 6px 0 #008800;
+            background: #003300;
+            box-shadow: 
+                4px 4px 0 var(--crt-green),
+                0 0 20px rgba(51, 255, 51, 0.5);
         }
         
         .btn-false {
-            background: #440000;
-            border-color: #ff6b6b;
-            color: #ff6b6b;
-            box-shadow: 4px 4px 0 #660000;
+            border-color: var(--retro-red);
+            color: var(--retro-red);
+            box-shadow: 
+                3px 3px 0 var(--retro-red),
+                0 0 10px rgba(255, 85, 85, 0.3);
         }
         
         .btn-false:hover {
-            background: #660000;
-            box-shadow: 6px 6px 0 #880000;
+            background: #330000;
+            box-shadow: 
+                4px 4px 0 var(--retro-red),
+                0 0 20px rgba(255, 85, 85, 0.5);
         }
         
         .btn-start {
-            background: #444400;
-            border-color: #ffd93d;
-            color: #ffd93d;
-            box-shadow: 4px 4px 0 #666600;
-            font-size: 14px;
-            padding: 20px 40px;
+            border-color: var(--retro-yellow);
+            color: var(--retro-yellow);
+            box-shadow: 
+                3px 3px 0 var(--retro-yellow),
+                0 0 10px rgba(255, 255, 0, 0.3);
+            font-size: 12px;
+            padding: 15px 30px;
         }
         
         .btn-start:hover {
-            background: #666600;
-            animation: pulse 0.5s infinite;
+            background: #333300;
+            box-shadow: 
+                4px 4px 0 var(--retro-yellow),
+                0 0 25px rgba(255, 255, 0, 0.5);
+            animation: buttonPulse 0.3s step-end infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        @keyframes buttonPulse {
+            0%, 50% { border-color: var(--retro-yellow); }
+            51%, 100% { border-color: var(--retro-cyan); }
         }
         
-        /* ====== RESULT OVERLAY ====== */
+        /* ====== RETRO RESULT OVERLAY ====== */
         .result-overlay {
             position: fixed;
             top: 0;
@@ -310,7 +417,7 @@
             align-items: center;
             justify-content: center;
             z-index: 999;
-            animation: fadeIn 0.3s;
+            animation: screenOn 0.3s step-end;
         }
         
         .result-overlay.show {
@@ -318,51 +425,68 @@
         }
         
         .result-overlay.correct {
-            background: rgba(0, 68, 0, 0.95);
+            background: rgba(0, 34, 0, 0.97);
+            border: 4px solid var(--crt-green);
         }
         
         .result-overlay.wrong {
-            background: rgba(68, 0, 0, 0.95);
+            background: rgba(34, 0, 0, 0.97);
+            border: 4px solid var(--retro-red);
         }
         
         .result-content {
             text-align: center;
-            padding: 40px;
+            padding: 30px;
+            border: 2px solid currentColor;
+            background: var(--bg-dark);
         }
         
         .result-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-            animation: bounce 0.5s;
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: iconBounce 0.5s step-end;
         }
         
-        @keyframes bounce {
+        @keyframes iconBounce {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(0.9); }
+            75% { transform: scale(1.1); }
+        }
+        
+        @keyframes screenOn {
+            0% { 
+                opacity: 0;
+                transform: scaleY(0.01);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleY(0.01);
+            }
+            100% {
+                transform: scaleY(1);
+            }
         }
         
         .result-text {
-            font-size: 24px;
+            font-size: 18px;
             margin-bottom: 10px;
+            text-shadow: 0 0 10px currentColor;
         }
         
         .result-subtext {
-            font-size: 10px;
-            color: #ccc;
+            font-size: 8px;
+            color: var(--retro-white);
             margin-bottom: 20px;
-            max-width: 400px;
+            max-width: 350px;
+            line-height: 1.8;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        /* ====== GAME OVER / VICTORY ====== */
+        /* ====== RETRO END SCREENS ====== */
         .end-screen {
             display: none;
             text-align: center;
-            padding: 30px;
+            padding: 20px;
         }
         
         .end-screen.show {
@@ -370,167 +494,249 @@
         }
         
         .end-screen h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px currentColor;
         }
         
         .end-screen.game-over h2 {
-            color: #ff6b6b;
-            animation: shake 0.5s infinite;
+            color: var(--retro-red);
+            animation: glitch 0.3s step-end infinite;
         }
         
         .end-screen.victory h2 {
-            color: #00ff88;
-            animation: rainbow 2s infinite;
+            color: var(--crt-green);
+            animation: victoryGlow 1s ease-in-out infinite;
         }
         
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+        @keyframes glitch {
+            0%, 100% { 
+                transform: translateX(0);
+                text-shadow: 0 0 10px var(--retro-red);
+            }
+            25% { 
+                transform: translateX(-3px);
+                text-shadow: -3px 0 var(--retro-cyan), 3px 0 var(--retro-magenta);
+            }
+            75% { 
+                transform: translateX(3px);
+                text-shadow: 3px 0 var(--retro-cyan), -3px 0 var(--retro-magenta);
+            }
         }
         
-        @keyframes rainbow {
-            0% { color: #ff6b6b; }
-            25% { color: #ffd93d; }
-            50% { color: #00ff88; }
-            75% { color: #6bcfff; }
-            100% { color: #ff6b6b; }
+        @keyframes victoryGlow {
+            0%, 100% { 
+                text-shadow: 0 0 10px var(--crt-green);
+                color: var(--crt-green);
+            }
+            33% { 
+                text-shadow: 0 0 20px var(--retro-cyan);
+                color: var(--retro-cyan);
+            }
+            66% { 
+                text-shadow: 0 0 20px var(--retro-yellow);
+                color: var(--retro-yellow);
+            }
         }
         
         .final-score {
-            font-size: 14px;
-            color: #ffd93d;
-            margin-bottom: 30px;
+            font-size: 12px;
+            color: var(--retro-yellow);
+            margin-bottom: 25px;
+            text-shadow: 0 0 5px var(--retro-yellow);
         }
         
-        .pixel-skull {
-            font-size: 50px;
-            margin-bottom: 20px;
+        .pixel-skull, .pixel-trophy {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
         }
         
         .pixel-trophy {
-            font-size: 50px;
-            margin-bottom: 20px;
-            animation: spin 2s infinite linear;
+            animation: trophySpin 1s step-end infinite;
         }
         
-        @keyframes spin {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
+        @keyframes trophySpin {
+            0%, 25% { transform: rotateY(0deg); }
+            26%, 50% { transform: rotateY(90deg); }
+            51%, 75% { transform: rotateY(180deg); }
+            76%, 100% { transform: rotateY(270deg); }
         }
         
-        /* ====== START SCREEN ====== */
+        /* ====== RETRO START SCREEN ====== */
         .start-screen {
             text-align: center;
-            padding: 20px;
+            padding: 15px;
         }
         
         .start-screen .logo {
-            font-size: 40px;
-            margin-bottom: 20px;
-            animation: float 2s ease-in-out infinite;
+            font-size: 35px;
+            margin-bottom: 15px;
+            animation: logoFloat 1s step-end infinite;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes logoFloat {
+            0%, 50% { transform: translateY(0); }
+            51%, 100% { transform: translateY(-5px); }
         }
         
         .start-screen .instructions {
-            font-size: 9px;
+            font-size: 8px;
             line-height: 2;
-            color: #aaa;
-            margin: 20px 0;
+            color: var(--crt-green);
+            margin: 15px 0;
             text-align: left;
-            padding: 15px;
-            background: #0a0a15;
-            border: 2px solid #333;
+            padding: 12px;
+            background: var(--bg-panel);
+            border: 2px solid var(--crt-green);
+            font-family: 'VT323', monospace;
         }
         
         .start-screen .instructions li {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             list-style: none;
         }
         
         .start-screen .instructions li::before {
-            content: '► ';
-            color: #ffd93d;
+            content: '> ';
+            color: var(--retro-cyan);
         }
         
         .highlight {
-            color: #ff6b6b;
+            color: var(--retro-red);
+            text-shadow: 0 0 5px var(--retro-red);
         }
         
         .highlight-green {
-            color: #00ff88;
+            color: var(--crt-green);
+            text-shadow: 0 0 5px var(--crt-green);
         }
         
-        /* ====== PIXEL DECORATIONS ====== */
+        /* ====== RETRO PIXEL BORDER ====== */
         .pixel-border {
-            height: 8px;
+            height: 4px;
             background: repeating-linear-gradient(
                 90deg,
-                #ff6b6b 0px,
-                #ff6b6b 8px,
-                #ffd93d 8px,
-                #ffd93d 16px,
-                #00ff88 16px,
-                #00ff88 24px,
-                #6bcfff 24px,
-                #6bcfff 32px
+                var(--retro-cyan) 0px,
+                var(--retro-cyan) 4px,
+                var(--retro-magenta) 4px,
+                var(--retro-magenta) 8px,
+                var(--retro-yellow) 8px,
+                var(--retro-yellow) 12px,
+                var(--crt-green) 12px,
+                var(--crt-green) 16px
             );
-            margin: 15px 0;
+            margin: 12px 0;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* ====== RETRO DECORATIVE ELEMENTS ====== */
+        .retro-header {
+            font-family: monospace;
+            font-size: 8px;
+            color: var(--retro-cyan);
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .retro-footer {
+            font-family: monospace;
+            font-size: 6px;
+            color: var(--retro-white);
+            text-align: center;
+            margin-top: 15px;
+            opacity: 0.7;
         }
         
         /* ====== RESPONSIVE ====== */
         @media (max-width: 600px) {
-            .title h1 { font-size: 12px; }
-            .btn { font-size: 10px; padding: 12px 18px; }
-            .news-headline { font-size: 10px; }
-            .chamber { width: 30px; height: 30px; font-size: 12px; }
-            .stats-bar { flex-direction: column; gap: 10px; }
+            .title h1 { font-size: 10px; }
+            .btn { font-size: 8px; padding: 10px 15px; }
+            .news-headline { font-size: 9px; }
+            .chamber { width: 28px; height: 28px; font-size: 10px; }
+            .stats-bar { flex-direction: column; gap: 8px; }
+            .game-container::before,
+            .game-container::after { font-size: 5px; }
         }
         
         /* ====== HIDDEN UTILITY ====== */
         .hidden {
             display: none !important;
         }
+        
+        /* ====== EXTRA RETRO EFFECTS ====== */
+        .crt-curve {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1002;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 60%,
+                rgba(0, 0, 0, 0.4) 100%
+            );
+        }
     </style>
 </head>
 <body>
+    <!-- CRT Curve Overlay -->
+    <div class="crt-curve"></div>
+    
     <div class="game-container">
+        <!-- Retro Header -->
+        <div class="retro-header">
+            ═══════════════════════════════════════<br>
+            ██ COMMODORE 64 BASIC V2 ██ 64K RAM ██
+        </div>
+        
         <!-- ====== START SCREEN ====== -->
         <div id="start-screen" class="start-screen">
             <div class="title">
-                <h1>🔫 FAKE NEWS ROULETTE 🔫</h1>
-                <div class="subtitle">★ 8-BIT EDITION ★</div>
+                <h1>FAKE NEWS ROULETTE</h1>
+                <div class="subtitle">★ RETRO 8-BIT EDITION ★</div>
             </div>
             
-            <div class="logo">🎰</div>
+            <!-- ASCII Art Gun -->
+            <div class="ascii-decoration">
+      ╔══════════════════╗
+      ║   ▄▄▄▄▄▄▄▄▄▄▄   ║
+      ║  █▀▀▀▀▀▀▀▀▀▀█═╗ ║
+      ║  █  READY?  █ ║ ║
+      ║  █▄▄▄▄▄▄▄▄▄▄█═╝ ║
+      ╚══════════════════╝
+            </div>
             
             <div class="pixel-border"></div>
             
             <ul class="instructions">
-                <li>Hai <span class="highlight">3 VITE</span> (❤️❤️❤️)</li>
-                <li>Ti verrà mostrata una <span class="highlight-green">NOTIZIA</span></li>
-                <li>Decidi se è <span class="highlight-green">VERA</span> o <span class="highlight">FALSA</span></li>
-                <li>Se <span class="highlight">SBAGLI</span> = 💥 BANG! Perdi una vita</li>
-                <li>Se <span class="highlight-green">INDOVINI</span> = 🎯 SALVO!</li>
-                <li>Sopravvivi a <span class="highlight-green">6 ROUND</span> per vincere!</li>
+                <li>HAI <span class="highlight">3 VITE</span> [***]</li>
+                <li>TI VERRA' MOSTRATA UNA <span class="highlight-green">NOTIZIA</span></li>
+                <li>DECIDI SE E' <span class="highlight-green">VERA</span> O <span class="highlight">FALSA</span></li>
+                <li>SE <span class="highlight">SBAGLI</span> = BANG! PERDI UNA VITA</li>
+                <li>SE <span class="highlight-green">INDOVINI</span> = SALVO!</li>
+                <li>SOPRAVVIVI A <span class="highlight-green">6 ROUND</span> PER VINCERE!</li>
             </ul>
             
             <div class="pixel-border"></div>
             
             <button class="btn btn-start" onclick="startGame()">
-                ▶ INIZIA GIOCO
+                [PRESS START]
             </button>
+            
+            <!-- Retro Footer -->
+            <div class="retro-footer">
+                INSERT COIN ▪ 1 CREDIT ▪ (C) 2024
+            </div>
         </div>
         
         <!-- ====== GAME SCREEN ====== -->
         <div id="game-screen" class="hidden">
             <div class="title">
-                <h1>🔫 FAKE NEWS ROULETTE</h1>
+                <h1>FAKE NEWS ROULETTE</h1>
             </div>
             
             <!-- Revolver Chambers -->
@@ -546,8 +752,8 @@
             <!-- Stats Bar -->
             <div class="stats-bar">
                 <div class="stat">
-                    <span class="stat-label">VITE</span>
-                    <span class="lives" id="lives">❤️❤️❤️</span>
+                    <span class="stat-label">LIVES</span>
+                    <span class="lives" id="lives">[***]</span>
                 </div>
                 <div class="stat">
                     <span class="stat-label">ROUND</span>
@@ -555,14 +761,14 @@
                 </div>
                 <div class="stat">
                     <span class="stat-label">SCORE</span>
-                    <span class="stat-value" id="score">0</span>
+                    <span class="stat-value" id="score">0000</span>
                 </div>
             </div>
             
             <!-- News Card -->
             <div class="news-card" id="news-card">
-                <div class="news-number" id="news-number">📰 NOTIZIA #1</div>
-                <div class="news-source" id="news-source">📡 FONTE: Loading...</div>
+                <div class="news-number" id="news-number">[NEWS #1]</div>
+                <div class="news-source" id="news-source">SOURCE: Loading...</div>
                 <div class="news-headline" id="news-headline">Caricamento notizia...</div>
                 <div class="news-details" id="news-details"></div>
             </div>
@@ -570,50 +776,76 @@
             <!-- Decision Buttons -->
             <div class="button-container">
                 <button class="btn btn-true" onclick="makeChoice(true)">
-                    ✓ VERA
+                    [A] VERA
                 </button>
                 <button class="btn btn-false" onclick="makeChoice(false)">
-                    ✗ FALSA
+                    [B] FALSA
                 </button>
             </div>
         </div>
         
         <!-- ====== GAME OVER SCREEN ====== -->
         <div id="gameover-screen" class="end-screen game-over hidden">
-            <div class="pixel-skull">💀</div>
-            <h2>GAME OVER</h2>
+            <div class="ascii-decoration">
+    ╔═══════════════════════╗
+    ║  ▄▄▄   ▄▄▄   ▄▄▄     ║
+    ║ █   █ █   █ █   █    ║
+    ║ █   █ █   █ █   █    ║
+    ║  ▀▀▀   ▀▀▀   ▀▀▀     ║
+    ╚═══════════════════════╝
+            </div>
+            <h2>** GAME OVER **</h2>
             <div class="pixel-border"></div>
-            <p class="final-score">SCORE FINALE: <span id="final-score-go">0</span></p>
-            <p style="font-size: 10px; color: #aaa; margin-bottom: 20px;">
-                Le fake news ti hanno sconfitto...
+            <p class="final-score">FINAL SCORE: <span id="final-score-go">0000</span></p>
+            <p style="font-size: 8px; color: var(--retro-white); margin-bottom: 20px;">
+                LE FAKE NEWS TI HANNO SCONFITTO...
             </p>
             <button class="btn btn-start" onclick="startGame()">
-                ↻ RIPROVA
+                [CONTINUE? 9]
             </button>
         </div>
         
         <!-- ====== VICTORY SCREEN ====== -->
         <div id="victory-screen" class="end-screen victory hidden">
-            <div class="pixel-trophy">🏆</div>
-            <h2>VITTORIA!</h2>
+            <div class="ascii-decoration">
+    ╔═══════════════════════╗
+    ║     ★ WINNER ★       ║
+    ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄     ║
+    ║  ▐█████████████▌    ║
+    ║   ▀▀▀▀███▀▀▀▀▀     ║
+    ║       ███           ║
+    ╚═══════════════════════╝
+            </div>
+            <h2>** VICTORY! **</h2>
             <div class="pixel-border"></div>
-            <p class="final-score">SCORE FINALE: <span id="final-score-v">0</span></p>
-            <p style="font-size: 10px; color: #aaa; margin-bottom: 20px;">
-                Sei un vero cacciatore di fake news!
+            <p class="final-score">FINAL SCORE: <span id="final-score-v">0000</span></p>
+            <p style="font-size: 8px; color: var(--retro-white); margin-bottom: 20px;">
+                SEI UN VERO CACCIATORE DI FAKE NEWS!
             </p>
             <button class="btn btn-start" onclick="startGame()">
-                ↻ GIOCA ANCORA
+                [PLAY AGAIN]
             </button>
+        </div>
+        
+        <!-- Retro Footer -->
+        <div class="retro-footer">
+            HIGH SCORE: 9999 ▪ CREDITS: 1
         </div>
     </div>
     
     <!-- ====== RESULT OVERLAY ====== -->
     <div id="result-overlay" class="result-overlay">
         <div class="result-content">
-            <div class="result-icon" id="result-icon">💥</div>
+            <div class="ascii-decoration" id="result-ascii">
+╔═══════════════════╗
+║      * * *        ║
+║    B A N G !      ║
+║      * * *        ║
+╚═══════════════════╝
+            </div>
             <div class="result-text" id="result-text">BANG!</div>
             <div class="result-subtext" id="result-subtext">Era una notizia falsa!</div>
-            <button class="btn btn-start" onclick="nextRound()">CONTINUA ►</button>
+            <button class="btn btn-start" onclick="nextRound()">[CONTINUE]</button>
         </div>
     </div>
 
@@ -833,9 +1065,9 @@
             gameState.currentNews = newsData[randomIndex];
             gameState.usedNews.push(randomIndex);
             
-            // Update news card
-            document.getElementById('news-number').textContent = `📰 NOTIZIA #${gameState.round}`;
-            document.getElementById('news-source').textContent = `📡 FONTE: ${gameState.currentNews.source}`;
+            // Update news card - retro style
+            document.getElementById('news-number').textContent = `[NEWS #${gameState.round}]`;
+            document.getElementById('news-source').textContent = `SOURCE: ${gameState.currentNews.source}`;
             document.getElementById('news-headline').textContent = gameState.currentNews.headline;
             document.getElementById('news-details').textContent = gameState.currentNews.details;
             
@@ -844,15 +1076,15 @@
         }
 
         function updateUI() {
-            // Update lives
-            const livesDisplay = '❤️'.repeat(gameState.lives) + '🖤'.repeat(3 - gameState.lives);
+            // Update lives - retro style [***] or [**-] etc.
+            const livesDisplay = '[' + '*'.repeat(gameState.lives) + '-'.repeat(3 - gameState.lives) + ']';
             document.getElementById('lives').textContent = livesDisplay;
             
             // Update round
             document.getElementById('round').textContent = `${gameState.round}/${gameState.maxRounds}`;
             
-            // Update score
-            document.getElementById('score').textContent = gameState.score;
+            // Update score - retro 4-digit format
+            document.getElementById('score').textContent = String(gameState.score).padStart(4, '0');
         }
 
         function updateChambers() {
@@ -863,11 +1095,11 @@
                 if (i < gameState.round) {
                     // Past chambers - show result
                     chamber.classList.add('empty');
-                    chamber.textContent = '✓';
+                    chamber.textContent = 'O';
                 } else if (i === gameState.round) {
                     // Current chamber
                     chamber.classList.add('current');
-                    chamber.textContent = '?';
+                    chamber.textContent = '>';
                 } else {
                     // Future chambers
                     chamber.textContent = i;
@@ -881,6 +1113,7 @@
             
             const isCorrect = choiceIsReal === gameState.currentNews.isReal;
             const overlay = document.getElementById('result-overlay');
+            const asciiResult = document.getElementById('result-ascii');
             
             if (isCorrect) {
                 // Correct answer
@@ -888,18 +1121,30 @@
                 gameState.score += 100;
                 
                 overlay.className = 'result-overlay show correct';
-                document.getElementById('result-icon').textContent = '🎯';
-                document.getElementById('result-text').textContent = 'SALVO!';
-                document.getElementById('result-text').style.color = '#00ff88';
+                asciiResult.textContent = `
+╔═══════════════════╗
+║    * CORRECT *    ║
+║                   ║
+║   >> SAFE! <<     ║
+║                   ║
+╚═══════════════════╝`;
+                document.getElementById('result-text').textContent = '** SAFE **';
+                document.getElementById('result-text').style.color = 'var(--crt-green)';
             } else {
                 // Wrong answer
                 playSound('wrong');
                 gameState.lives--;
                 
                 overlay.className = 'result-overlay show wrong';
-                document.getElementById('result-icon').textContent = '💥';
-                document.getElementById('result-text').textContent = 'BANG!';
-                document.getElementById('result-text').style.color = '#ff6b6b';
+                asciiResult.textContent = `
+╔═══════════════════╗
+║    * * * * *      ║
+║                   ║
+║   >> BANG! <<     ║
+║                   ║
+╚═══════════════════╝`;
+                document.getElementById('result-text').textContent = '** BANG! **';
+                document.getElementById('result-text').style.color = 'var(--retro-red)';
             }
             
             document.getElementById('result-subtext').textContent = gameState.currentNews.explanation;
@@ -935,7 +1180,7 @@
             
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('gameover-screen').classList.remove('hidden');
-            document.getElementById('final-score-go').textContent = gameState.score;
+            document.getElementById('final-score-go').textContent = String(gameState.score).padStart(4, '0');
         }
 
         function showVictory() {
@@ -946,7 +1191,7 @@
             
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('victory-screen').classList.remove('hidden');
-            document.getElementById('final-score-v').textContent = gameState.score;
+            document.getElementById('final-score-v').textContent = String(gameState.score).padStart(4, '0');
         }
 
         // ====== KEYBOARD SUPPORT ======
