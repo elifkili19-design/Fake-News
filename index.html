@@ -1,56 +1,772 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Long-Form Puzzle Game</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <title>Fake News Roulette - Il Gioco della Verità</title>
     <style>
-        body {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
         .container {
-            max-width: 800px;
-            margin: auto;
+            max-width: 900px;
+            margin: 0 auto;
             padding: 20px;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
         h1 {
             text-align: center;
-            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            color: #e94560;
         }
-        .level {
-            border: 1px solid #bdc3c7;
-            margin: 10px 0;
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        /* Revolver Chamber Display */
+        .revolver-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+
+        .revolver {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2d2d2d 0%, #1a1a1a 100%);
+            border: 8px solid #444;
+            position: relative;
+            box-shadow: 0 0 30px rgba(233, 69, 96, 0.3), inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .chamber {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #333;
+            border: 3px solid #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .chamber.current {
+            border-color: #e94560;
+            box-shadow: 0 0 15px #e94560;
+            animation: pulse 1s infinite;
+        }
+
+        .chamber.correct {
+            background: #27ae60;
+            border-color: #2ecc71;
+        }
+
+        .chamber.wrong {
+            background: #c0392b;
+            border-color: #e74c3c;
+        }
+
+        .chamber.empty {
+            background: #333;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Position chambers in a circle */
+        .chamber:nth-child(1) { top: 5px; left: 50%; transform: translateX(-50%); }
+        .chamber:nth-child(2) { top: 30px; right: 20px; }
+        .chamber:nth-child(3) { bottom: 30px; right: 20px; }
+        .chamber:nth-child(4) { bottom: 5px; left: 50%; transform: translateX(-50%); }
+        .chamber:nth-child(5) { bottom: 30px; left: 20px; }
+        .chamber:nth-child(6) { top: 30px; left: 20px; }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #444 0%, #222 100%);
+            border: 4px solid #555;
+        }
+
+        /* Game Card */
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 700px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .news-label {
+            background: #e94560;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .news-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            border-left: 4px solid #e94560;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-real {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-real:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
+        }
+
+        .btn-fake {
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(192, 57, 43, 0.4);
+        }
+
+        .btn-fake:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(192, 57, 43, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Result overlay */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .result-overlay.show {
+            display: flex;
+        }
+
+        .result-content {
+            text-align: center;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b8a 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-restart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.5);
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .start-screen h2 {
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .rules {
+            background: rgba(233, 69, 96, 0.1);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .rules h3 {
+            color: #e94560;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .rules ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules li {
+            padding: 8px 0;
+            color: #ccc;
+            font-size: 1rem;
+        }
+
+        .rules li::before {
+            content: "🎯 ";
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b8a 100%);
+            color: white;
+            padding: 20px 60px;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-start:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(233, 69, 96, 0.6);
+        }
+
+        /* Feedback message */
+        .feedback {
+            text-align: center;
             padding: 15px;
-            border-radius: 5px;
-            background-color: #ecf0f1;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            color: #2ecc71;
+        }
+
+        .feedback.wrong {
+            background: rgba(192, 57, 43, 0.2);
+            border: 1px solid #c0392b;
+            color: #e74c3c;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Shake animation for wrong answer */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .news-text { font-size: 1.1rem; }
+            .btn { padding: 12px 30px; font-size: 1rem; }
+            .revolver-container { transform: scale(0.8); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to the Long-Form Puzzle Game</h1>
-        <div class="level">
-            <h2>Level 1: Introduction</h2>
-            <p>Get ready for an immersive puzzle-solving experience!</p>
-            <button onclick="startLevel(1)">Start Level 1</button>
+        <h1>🎰 FAKE NEWS ROULETTE 🎰</h1>
+        <p class="subtitle">Il Gioco della Verità - Sopravvivi alle Fake News!</p>
+
+        <!-- Revolver Display -->
+        <div class="revolver-container">
+            <div class="revolver">
+                <div class="chamber" id="chamber-0">1</div>
+                <div class="chamber" id="chamber-1">2</div>
+                <div class="chamber" id="chamber-2">3</div>
+                <div class="chamber" id="chamber-3">4</div>
+                <div class="chamber" id="chamber-4">5</div>
+                <div class="chamber" id="chamber-5">6</div>
+                <div class="center-circle"></div>
+            </div>
         </div>
-        <div class="level">
-            <h2>Level 2: Intermediate Challenges</h2>
-            <p>Put your skills to the test with these intermediate puzzles.</p>
-            <button onclick="startLevel(2)">Start Level 2</button>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="round-number">0</div>
+                <div class="stat-label">Round</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">Punti</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="lives">3</div>
+                <div class="stat-label">Vite 💔</div>
+            </div>
         </div>
-        <div class="level">
-            <h2>Level 3: Expert Puzzles</h2>
-            <p>Only the best can solve these expert-level puzzles!</p>
-            <button onclick="startLevel(3)">Start Level 3</button>
+
+        <!-- Start Screen -->
+        <div class="game-card" id="start-screen">
+            <div class="start-screen">
+                <h2>Benvenuto nella Roulette delle Fake News!<br>
+                Sei pronto a sfidare la disinformazione?</h2>
+                
+                <div class="rules">
+                    <h3>📜 Regole del Gioco</h3>
+                    <ul>
+                        <li>Ti verranno mostrate 6 notizie, come le 6 camere di un revolver</li>
+                        <li>Devi decidere se ogni notizia è VERA o FALSA</li>
+                        <li>Ogni risposta sbagliata ti fa perdere una vita</li>
+                        <li>Hai 3 vite - se le perdi tutte, GAME OVER!</li>
+                        <li>Rispondi correttamente a tutte e 6 per vincere!</li>
+                    </ul>
+                </div>
+                
+                <button class="btn-start" onclick="startGame()">🔫 INIZIA IL GIOCO</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-card" id="game-screen" style="display: none;">
+            <span class="news-label">📰 Notizia #<span id="news-number">1</span></span>
+            <div class="news-text" id="news-text">
+                Loading...
+            </div>
+            <div class="buttons-container">
+                <button class="btn btn-real" id="btn-real" onclick="answer(true)">✅ VERA</button>
+                <button class="btn btn-fake" id="btn-fake" onclick="answer(false)">❌ FALSA</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
         </div>
     </div>
+
+    <!-- Result Overlay -->
+    <div class="result-overlay" id="result-overlay">
+        <div class="result-content">
+            <div class="result-icon" id="result-icon">🏆</div>
+            <h2 class="result-title" id="result-title">Hai Vinto!</h2>
+            <p class="result-message" id="result-message">Complimenti! Sei un esperto nel riconoscere le fake news!</p>
+            <button class="btn-restart" onclick="restartGame()">🔄 GIOCA ANCORA</button>
+        </div>
+    </div>
+
+    <script>
+        // Database delle notizie - mix di vere e false
+        const newsDatabase = [
+            // Notizie FALSE (Fake News)
+            {
+                text: "Gli scienziati hanno scoperto che mangiare cioccolato ogni giorno fa perdere 5kg in una settimana",
+                isReal: false,
+                explanation: "FALSO! Non esistono cibi miracolosi che fanno perdere peso così velocemente."
+            },
+            {
+                text: "Il 5G è stato creato per controllare la mente delle persone attraverso i telefoni",
+                isReal: false,
+                explanation: "FALSO! Il 5G è semplicemente una tecnologia di comunicazione più veloce."
+            },
+            {
+                text: "I vaccini contengono microchip per tracciare la popolazione mondiale",
+                isReal: false,
+                explanation: "FALSO! I vaccini contengono solo ingredienti medici sicuri e testati."
+            },
+            {
+                text: "La Terra è piatta e la NASA nasconde la verità da 60 anni",
+                isReal: false,
+                explanation: "FALSO! La Terra è sferica, come dimostrato da millenni di scienza."
+            },
+            {
+                text: "Bere candeggina può curare il COVID-19",
+                isReal: false,
+                explanation: "FALSO e PERICOLOSO! La candeggina è tossica e può essere letale."
+            },
+            {
+                text: "I gatti possono prevedere i terremoti 24 ore prima che avvengano con precisione del 100%",
+                isReal: false,
+                explanation: "FALSO! Alcuni animali percepiscono i terremoti, ma non con questa precisione."
+            },
+            {
+                text: "Mangiare carote di notte permette di vedere al buio come i gatti",
+                isReal: false,
+                explanation: "FALSO! Le carote contengono vitamina A utile per la vista, ma non danno superpoteri."
+            },
+            {
+                text: "Il cervello umano usa solo il 10% delle sue capacità",
+                isReal: false,
+                explanation: "FALSO! Usiamo tutte le parti del cervello, anche se non tutte contemporaneamente."
+            },
+            
+            // Notizie VERE
+            {
+                text: "Gli elefanti sono gli unici animali che non possono saltare",
+                isReal: true,
+                explanation: "VERO! La struttura delle loro zampe non permette loro di saltare."
+            },
+            {
+                text: "Il miele è l'unico cibo che non scade mai se conservato correttamente",
+                isReal: true,
+                explanation: "VERO! Il miele è stato trovato commestibile nelle tombe egizie di 3000 anni fa."
+            },
+            {
+                text: "I polpi hanno tre cuori",
+                isReal: true,
+                explanation: "VERO! Due cuori pompano sangue alle branchie, uno al resto del corpo."
+            },
+            {
+                text: "Le impronte digitali dei koala sono quasi identiche a quelle umane",
+                isReal: true,
+                explanation: "VERO! Sono così simili che potrebbero confondere gli esperti forensi."
+            },
+            {
+                text: "In Svizzera è illegale possedere un solo porcellino d'India perché soffrono di solitudine",
+                isReal: true,
+                explanation: "VERO! Dal 2008, la Svizzera richiede che i porcellini d'India siano tenuti in coppia."
+            },
+            {
+                text: "Le banane sono leggermente radioattive",
+                isReal: true,
+                explanation: "VERO! Contengono potassio-40, ma in quantità completamente sicure."
+            },
+            {
+                text: "I fenicotteri nascono grigi e diventano rosa per la loro alimentazione",
+                isReal: true,
+                explanation: "VERO! I pigmenti dei crostacei che mangiano colorano le loro piume."
+            },
+            {
+                text: "Un fulmine può raggiungere temperature più alte della superficie del sole",
+                isReal: true,
+                explanation: "VERO! Un fulmine può raggiungere circa 30.000 gradi Celsius."
+            }
+        ];
+
+        let currentRound = 0;
+        let score = 0;
+        let lives = 3;
+        let gameNews = [];
+        let canAnswer = true;
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function selectGameNews() {
+            // Seleziona 3 notizie false e 3 vere
+            const fakeNews = newsDatabase.filter(n => !n.isReal);
+            const realNews = newsDatabase.filter(n => n.isReal);
+            
+            const selectedFake = shuffleArray(fakeNews).slice(0, 3);
+            const selectedReal = shuffleArray(realNews).slice(0, 3);
+            
+            // Mescola tutte le 6 notizie selezionate
+            gameNews = shuffleArray([...selectedFake, ...selectedReal]);
+        }
+
+        function startGame() {
+            currentRound = 0;
+            score = 0;
+            lives = 3;
+            selectGameNews();
+            
+            // Reset chambers
+            for (let i = 0; i < 6; i++) {
+                const chamber = document.getElementById(`chamber-${i}`);
+                chamber.className = 'chamber';
+                chamber.textContent = i + 1;
+            }
+            
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            
+            updateStats();
+            showNews();
+        }
+
+        function updateStats() {
+            document.getElementById('round-number').textContent = currentRound + 1;
+            document.getElementById('score').textContent = score;
+            document.getElementById('lives').textContent = lives;
+        }
+
+        function showNews() {
+            if (currentRound >= 6) {
+                endGame(true);
+                return;
+            }
+
+            canAnswer = true;
+            document.getElementById('btn-real').disabled = false;
+            document.getElementById('btn-fake').disabled = false;
+            
+            const news = gameNews[currentRound];
+            document.getElementById('news-number').textContent = currentRound + 1;
+            document.getElementById('news-text').textContent = news.text;
+            
+            // Highlight current chamber
+            for (let i = 0; i < 6; i++) {
+                const chamber = document.getElementById(`chamber-${i}`);
+                if (i === currentRound && !chamber.classList.contains('correct') && !chamber.classList.contains('wrong')) {
+                    chamber.classList.add('current');
+                } else {
+                    chamber.classList.remove('current');
+                }
+            }
+            
+            // Hide previous feedback
+            document.getElementById('feedback').classList.remove('show');
+            
+            updateStats();
+        }
+
+        function answer(answeredReal) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const news = gameNews[currentRound];
+            const isCorrect = (answeredReal === news.isReal);
+            const chamber = document.getElementById(`chamber-${currentRound}`);
+            const feedback = document.getElementById('feedback');
+            
+            // Disable buttons
+            document.getElementById('btn-real').disabled = true;
+            document.getElementById('btn-fake').disabled = true;
+            
+            chamber.classList.remove('current');
+            
+            if (isCorrect) {
+                // Risposta corretta
+                score += 100;
+                chamber.classList.add('correct');
+                chamber.textContent = '✓';
+                
+                feedback.className = 'feedback show correct';
+                feedback.innerHTML = `<strong>Ottimo!</strong> ${news.explanation}`;
+            } else {
+                // Risposta sbagliata - "colpo sparato"
+                lives--;
+                chamber.classList.add('wrong');
+                chamber.textContent = '💥';
+                
+                feedback.className = 'feedback show wrong';
+                feedback.innerHTML = `<strong>BANG! 💀</strong> ${news.explanation}`;
+                
+                // Shake animation
+                document.getElementById('game-screen').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('game-screen').classList.remove('shake');
+                }, 500);
+                
+                if (lives <= 0) {
+                    setTimeout(() => endGame(false), 1500);
+                    return;
+                }
+            }
+            
+            updateStats();
+            
+            // Passa alla prossima notizia dopo un delay
+            currentRound++;
+            setTimeout(() => {
+                if (currentRound >= 6 && lives > 0) {
+                    endGame(true);
+                } else if (lives > 0) {
+                    showNews();
+                }
+            }, 2500);
+        }
+
+        function endGame(won) {
+            const overlay = document.getElementById('result-overlay');
+            const icon = document.getElementById('result-icon');
+            const title = document.getElementById('result-title');
+            const message = document.getElementById('result-message');
+            
+            if (won) {
+                icon.textContent = '🏆';
+                title.textContent = 'HAI VINTO!';
+                title.style.color = '#2ecc71';
+                message.innerHTML = `Incredibile! Sei sopravvissuto alla Roulette delle Fake News!<br><br>
+                    <strong>Punteggio finale: ${score} punti</strong><br>
+                    <strong>Vite rimaste: ${lives}</strong><br><br>
+                    Sei un vero detective della disinformazione! 🕵️`;
+            } else {
+                icon.textContent = '💀';
+                title.textContent = 'GAME OVER';
+                title.style.color = '#e74c3c';
+                message.innerHTML = `La disinformazione ti ha colpito!<br><br>
+                    <strong>Punteggio finale: ${score} punti</strong><br>
+                    <strong>Round raggiunto: ${currentRound}/6</strong><br><br>
+                    Ricorda: verifica sempre le fonti! 📰`;
+            }
+            
+            overlay.classList.add('show');
+        }
+
+        function restartGame() {
+            document.getElementById('result-overlay').classList.remove('show');
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'block';
+            
+            // Reset everything
+            currentRound = 0;
+            score = 0;
+            lives = 3;
+            
+            // Reset chambers visually
+            for (let i = 0; i < 6; i++) {
+                const chamber = document.getElementById(`chamber-${i}`);
+                chamber.className = 'chamber';
+                chamber.textContent = i + 1;
+            }
+            
+            updateStats();
+        }
+
+        // Initialize stats on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+        });
+    </script>
 </body>
 </html>
