@@ -5,25 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎮 FAKE NEWS ROULETTE - 8-Bit Edition</title>
     <style>
-        /* ====== REALISTIC 8-BIT RETRO FONT ====== */
+        /* ====== LIAR'S BAR INSPIRED 8-BIT RETRO STYLE ====== */
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
         :root {
-            /* REALISTIC RETRO PALETTE - Authentic CRT Amber Monitor */
-            --crt-amber: #ffb000;
-            --crt-amber-dim: #cc8800;
-            --crt-amber-glow: rgba(255, 176, 0, 0.15);
-            --text-bright: #ffd966;
-            --text-normal: #cc9933;
-            --text-dim: #996622;
-            --accent-green: #44bb44;
-            --accent-red: #cc4444;
-            --accent-blue: #4488cc;
-            --bg-screen: #0a0806;
-            --bg-panel: #0d0b08;
-            --border-main: #886633;
-            --border-light: #aa8844;
+            /* LIAR'S BAR COLOR PALETTE - Dark Bar Atmosphere */
+            --bar-purple: #2d1b4e;
+            --bar-purple-dark: #1a0f2e;
+            --bar-purple-light: #4a2d7a;
+            --bar-red: #8b2a2a;
+            --bar-red-glow: #cc3333;
+            --bar-gold: #d4a437;
+            --bar-gold-dim: #a67c28;
+            --bar-gold-bright: #ffd54f;
+            --neon-pink: #ff4d8d;
+            --neon-cyan: #00d4ff;
+            --neon-green: #39ff14;
+            --wood-dark: #2a1f14;
+            --wood-medium: #3d2b1f;
+            --wood-light: #5c4033;
+            --felt-green: #1a4d2e;
+            --text-cream: #f5e6d3;
+            --text-gold: #ffd700;
+            --shadow-dark: rgba(0, 0, 0, 0.8);
         }
         
         * {
@@ -32,20 +37,33 @@
             box-sizing: border-box;
         }
         
+        /* ====== SHADY BAR BACKGROUND ====== */
         body {
-            background: linear-gradient(135deg, #1a1512 0%, #0d0a08 50%, #141210 100%);
-            font-family: 'VT323', 'Share Tech Mono', monospace;
+            background: 
+                /* Smoke/haze effect */
+                radial-gradient(ellipse at 30% 20%, rgba(100, 50, 120, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(139, 42, 42, 0.1) 0%, transparent 40%),
+                /* Neon light glow from above */
+                radial-gradient(ellipse at 50% 0%, rgba(255, 77, 141, 0.08) 0%, transparent 40%),
+                /* Base gradient */
+                linear-gradient(180deg, 
+                    var(--bar-purple-dark) 0%, 
+                    #0d0815 30%,
+                    #080510 70%,
+                    #050308 100%
+                );
+            font-family: 'VT323', monospace;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--crt-amber);
+            color: var(--text-cream);
             overflow-x: hidden;
             position: relative;
         }
         
-        /* ====== REALISTIC CRT SCANLINES ====== */
+        /* ====== AMBIENT LIGHT FLICKER ====== */
         body::before {
             content: '';
             position: fixed;
@@ -53,214 +71,293 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 0, 0, 0.1) 2px,
-                rgba(0, 0, 0, 0.1) 4px
-            );
+            background: 
+                /* Scanlines for 8-bit effect */
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(0, 0, 0, 0.15) 3px,
+                    rgba(0, 0, 0, 0.15) 6px
+                );
             pointer-events: none;
             z-index: 1000;
+            animation: flicker 8s infinite;
         }
         
-        /* ====== REALISTIC CRT MONITOR FRAME ====== */
-        .game-container {
-            max-width: 680px;
-            width: 95%;
-            background: var(--bg-screen);
-            border: 3px solid var(--border-main);
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 
-                inset 0 0 80px rgba(255, 176, 0, 0.03),
-                0 4px 20px rgba(0, 0, 0, 0.8),
-                0 0 1px var(--crt-amber-dim);
-            padding: 25px;
-        }
-        
-        /* Monitor bezel effect */
-        .game-container::before {
-            content: '';
-            position: absolute;
-            top: -12px;
-            left: -12px;
-            right: -12px;
-            bottom: -12px;
-            background: linear-gradient(145deg, #3d3530 0%, #252220 50%, #1a1815 100%);
-            border-radius: 12px;
-            z-index: -1;
-            box-shadow: 
-                inset 0 2px 4px rgba(255,255,255,0.1),
-                inset 0 -2px 4px rgba(0,0,0,0.3),
-                0 8px 30px rgba(0,0,0,0.6);
-        }
-        
-        /* Power LED */
-        .game-container::after {
-            content: '●';
-            position: absolute;
-            bottom: -8px;
-            right: 20px;
-            font-size: 8px;
-            color: #44cc44;
-            text-shadow: 0 0 4px #44cc44;
-            animation: ledPulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes ledPulse {
+        @keyframes flicker {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            92% { opacity: 1; }
+            93% { opacity: 0.9; }
+            94% { opacity: 1; }
+            97% { opacity: 0.95; }
         }
         
-        /* ====== REALISTIC TITLE ====== */
+        /* ====== POKER TABLE / BAR COUNTER CONTAINER ====== */
+        .game-container {
+            max-width: 700px;
+            width: 95%;
+            background: 
+                /* Felt texture overlay */
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0,0,0,0.03) 2px,
+                    rgba(0,0,0,0.03) 4px
+                ),
+                /* Main felt gradient */
+                linear-gradient(180deg, 
+                    var(--felt-green) 0%, 
+                    #0f3d22 50%,
+                    #0a2a18 100%
+                );
+            border: 8px solid var(--wood-dark);
+            border-radius: 16px;
+            position: relative;
+            padding: 25px;
+            box-shadow: 
+                /* Inner glow */
+                inset 0 0 60px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(212, 164, 55, 0.1),
+                /* Wood frame shadow */
+                0 0 0 4px var(--wood-medium),
+                0 0 0 8px var(--wood-light),
+                /* Ambient shadow */
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                /* Neon underglow */
+                0 0 40px rgba(255, 77, 141, 0.15);
+        }
+        
+        /* Decorative corner brass plates */
+        .game-container::before,
+        .game-container::after {
+            content: '◆';
+            position: absolute;
+            font-size: 20px;
+            color: var(--bar-gold);
+            text-shadow: 0 0 10px var(--bar-gold-dim);
+        }
+        .game-container::before { top: 8px; left: 12px; }
+        .game-container::after { bottom: 8px; right: 12px; }
+        
+        /* ====== NEON SIGN TITLE ====== */
         .title {
             text-align: center;
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-main);
+            position: relative;
         }
         
         .title h1 {
-            font-family: 'VT323', monospace;
-            font-size: 32px;
-            font-weight: normal;
-            color: var(--crt-amber);
-            text-shadow: 0 0 8px var(--crt-amber-glow);
-            margin-bottom: 8px;
-            letter-spacing: 3px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 18px;
+            color: var(--neon-pink);
+            text-shadow: 
+                0 0 5px var(--neon-pink),
+                0 0 10px var(--neon-pink),
+                0 0 20px var(--neon-pink),
+                0 0 40px rgba(255, 77, 141, 0.5),
+                2px 2px 0 var(--bar-purple-dark);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            animation: neonFlicker 3s infinite;
+        }
+        
+        @keyframes neonFlicker {
+            0%, 100% { opacity: 1; text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; text-shadow: 0 0 2px var(--neon-pink); }
+            94% { opacity: 1; text-shadow: 0 0 5px var(--neon-pink), 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink); }
+            96% { opacity: 0.9; }
         }
         
         .title .subtitle {
-            font-size: 14px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            color: var(--bar-gold);
+            text-shadow: 0 0 8px rgba(212, 164, 55, 0.5);
+            letter-spacing: 3px;
         }
         
-        /* ====== NEWSPAPER STYLE NEWS CARD ====== */
+        /* ====== POKER CARD STYLE NEWS ====== */
         .news-card {
-            background: linear-gradient(180deg, #f5f0e6 0%, #e8e0d0 100%);
-            border: 1px solid #999;
+            background: 
+                /* Card texture */
+                linear-gradient(135deg, 
+                    #f8f4e8 0%, 
+                    #f0e8d8 50%,
+                    #e8dcc8 100%
+                );
+            border: 3px solid var(--wood-dark);
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
             position: relative;
-            color: #222;
+            color: #1a1a1a;
             box-shadow: 
-                2px 2px 8px rgba(0,0,0,0.3),
-                inset 0 0 20px rgba(0,0,0,0.05);
+                4px 4px 0 var(--wood-medium),
+                8px 8px 20px rgba(0, 0, 0, 0.4),
+                inset 0 0 30px rgba(0, 0, 0, 0.05);
+            transform: rotate(-0.5deg);
         }
         
-        /* Newspaper masthead */
+        /* Card corner decorations */
         .news-card::before {
-            content: '═══════════════════════════════════════════';
+            content: '♠ ♥ ♦ ♣';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            font-size: 8px;
-            color: #666;
-            text-align: center;
-            letter-spacing: -1px;
+            top: 8px;
+            left: 12px;
+            font-size: 12px;
+            color: var(--bar-red);
+            letter-spacing: 4px;
+        }
+        
+        .news-card::after {
+            content: '♣ ♦ ♥ ♠';
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 12px;
+            color: #1a1a1a;
+            letter-spacing: 4px;
         }
         
         .news-number {
-            font-family: 'Times New Roman', Georgia, serif;
-            font-size: 11px;
-            color: #444;
-            margin-bottom: 8px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            color: var(--bar-red);
+            margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
+            letter-spacing: 1px;
         }
         
         .news-source {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
+            font-family: 'VT323', monospace;
+            font-size: 14px;
             color: #666;
             margin-bottom: 12px;
             font-style: italic;
+            border-bottom: 1px dashed #999;
+            padding-bottom: 8px;
         }
         
         .news-headline {
-            font-family: 'Times New Roman', Georgia, serif;
-            font-size: 18px;
+            font-family: 'VT323', monospace;
+            font-size: 22px;
             font-weight: bold;
-            line-height: 1.4;
-            color: #111;
+            line-height: 1.3;
+            color: #0a0a0a;
             margin-bottom: 12px;
         }
         
         .news-details {
-            font-family: 'Georgia', serif;
-            font-size: 13px;
+            font-family: 'VT323', monospace;
+            font-size: 16px;
             color: #333;
-            line-height: 1.6;
-            text-align: justify;
+            line-height: 1.5;
         }
         
-        /* ====== REVOLVER CYLINDER - Realistic ====== */
+        /* ====== REVOLVER CYLINDER - Liar's Bar Style ====== */
         .revolver-section {
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 20px 0;
-            gap: 6px;
-            padding: 15px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-main);
-            border-radius: 4px;
+            gap: 8px;
+            padding: 20px;
+            background: 
+                radial-gradient(circle at center, 
+                    rgba(212, 164, 55, 0.1) 0%, 
+                    transparent 70%
+                ),
+                linear-gradient(180deg, 
+                    rgba(0,0,0,0.3) 0%, 
+                    transparent 50%,
+                    rgba(0,0,0,0.2) 100%
+                );
+            border: 2px solid var(--bar-gold-dim);
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        /* Revolver ASCII art above chambers */
+        .revolver-section::before {
+            content: '🔫';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            filter: drop-shadow(0 0 5px var(--bar-gold));
         }
         
         .chamber {
-            width: 38px;
-            height: 38px;
-            border: 2px solid var(--text-dim);
+            width: 44px;
+            height: 44px;
+            border: 3px solid var(--bar-gold-dim);
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #2a2520, #0a0806);
+            background: 
+                radial-gradient(circle at 30% 30%, 
+                    #3d3d3d 0%, 
+                    #1a1a1a 50%,
+                    #0a0a0a 100%
+                );
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-family: 'VT323', monospace;
-            color: var(--text-dim);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            color: var(--bar-gold-dim);
             transition: all 0.2s ease;
-        }
-        
-        .chamber.loaded {
-            border-color: var(--accent-red);
-            background: radial-gradient(circle at 30% 30%, #3a2020, #1a0808);
-            color: var(--accent-red);
-            box-shadow: 0 0 8px rgba(204, 68, 68, 0.3);
+            box-shadow: 
+                inset 0 2px 4px rgba(255,255,255,0.1),
+                inset 0 -2px 4px rgba(0,0,0,0.3),
+                0 2px 8px rgba(0,0,0,0.5);
         }
         
         .chamber.empty {
-            border-color: var(--accent-green);
-            background: radial-gradient(circle at 30% 30%, #203a20, #081a08);
-            color: var(--accent-green);
-            box-shadow: 0 0 8px rgba(68, 187, 68, 0.3);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 
+                0 0 10px rgba(57, 255, 20, 0.4),
+                inset 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+        
+        .chamber.loaded {
+            border-color: var(--bar-red-glow);
+            color: var(--bar-red-glow);
+            box-shadow: 
+                0 0 10px rgba(204, 51, 51, 0.4),
+                inset 0 0 10px rgba(204, 51, 51, 0.1);
         }
         
         .chamber.current {
-            transform: scale(1.1);
-            border-color: var(--crt-amber);
-            box-shadow: 0 0 12px var(--crt-amber-glow);
-            animation: chamberGlow 1.5s ease-in-out infinite;
+            transform: scale(1.15);
+            border-color: var(--bar-gold-bright);
+            color: var(--bar-gold-bright);
+            box-shadow: 
+                0 0 15px var(--bar-gold),
+                0 0 30px rgba(212, 164, 55, 0.3);
+            animation: chamberPulse 1s ease-in-out infinite;
         }
         
-        @keyframes chamberGlow {
-            0%, 100% { box-shadow: 0 0 8px var(--crt-amber-glow); }
-            50% { box-shadow: 0 0 15px var(--crt-amber-glow); }
+        @keyframes chamberPulse {
+            0%, 100% { box-shadow: 0 0 15px var(--bar-gold), 0 0 30px rgba(212, 164, 55, 0.3); }
+            50% { box-shadow: 0 0 20px var(--bar-gold-bright), 0 0 40px rgba(255, 213, 79, 0.4); }
         }
         
-        /* ====== REALISTIC STATS BAR ====== */
+        /* ====== CASINO CHIP STYLE STATS ====== */
         .stats-bar {
             display: flex;
-            justify-content: space-between;
-            padding: 12px 20px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-main);
-            border-radius: 4px;
+            justify-content: space-around;
+            padding: 15px;
+            background: 
+                linear-gradient(180deg, 
+                    rgba(0,0,0,0.4) 0%, 
+                    rgba(0,0,0,0.2) 100%
+                );
+            border: 2px solid var(--bar-gold-dim);
+            border-radius: 8px;
             margin-bottom: 20px;
         }
         
@@ -268,29 +365,32 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
         
         .stat-label {
-            color: var(--text-dim);
-            font-size: 12px;
+            font-family: 'VT323', monospace;
+            color: var(--bar-gold);
+            font-size: 14px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
         
         .stat-value {
-            color: var(--crt-amber);
-            font-size: 20px;
-            font-weight: bold;
+            font-family: 'Press Start 2P', monospace;
+            color: var(--text-cream);
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(245, 230, 211, 0.3);
         }
         
         .lives {
-            color: var(--accent-red);
-            font-size: 18px;
-            letter-spacing: 3px;
+            color: var(--bar-red-glow);
+            font-size: 20px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px rgba(204, 51, 51, 0.5);
         }
         
-        /* ====== REALISTIC BUTTONS ====== */
+        /* ====== POKER BUTTONS ====== */
         .button-container {
             display: flex;
             gap: 20px;
@@ -299,20 +399,37 @@
         }
         
         .btn {
-            font-family: 'VT323', monospace;
-            font-size: 18px;
-            padding: 12px 28px;
-            border: 2px solid;
-            border-radius: 4px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            padding: 15px 30px;
+            border: 3px solid;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.15s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
-            background: var(--bg-panel);
+            background: var(--bar-purple-dark);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.3s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
         }
         
         .btn:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
         
         .btn:active {
@@ -320,41 +437,50 @@
         }
         
         .btn-true {
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-            box-shadow: 0 2px 8px rgba(68, 187, 68, 0.2);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 
+                0 4px 0 #1a5a0a,
+                0 0 20px rgba(57, 255, 20, 0.2);
         }
         
         .btn-true:hover {
-            background: rgba(68, 187, 68, 0.1);
-            box-shadow: 0 4px 12px rgba(68, 187, 68, 0.3);
+            box-shadow: 
+                0 6px 0 #1a5a0a,
+                0 0 30px rgba(57, 255, 20, 0.4);
         }
         
         .btn-false {
-            border-color: var(--accent-red);
-            color: var(--accent-red);
-            box-shadow: 0 2px 8px rgba(204, 68, 68, 0.2);
+            border-color: var(--bar-red-glow);
+            color: var(--bar-red-glow);
+            box-shadow: 
+                0 4px 0 #5a1a1a,
+                0 0 20px rgba(204, 51, 51, 0.2);
         }
         
         .btn-false:hover {
-            background: rgba(204, 68, 68, 0.1);
-            box-shadow: 0 4px 12px rgba(204, 68, 68, 0.3);
+            box-shadow: 
+                0 6px 0 #5a1a1a,
+                0 0 30px rgba(204, 51, 51, 0.4);
         }
         
         .btn-start {
-            border-color: var(--crt-amber);
-            color: var(--crt-amber);
-            box-shadow: 0 2px 8px var(--crt-amber-glow);
-            font-size: 20px;
-            padding: 15px 40px;
+            border-color: var(--bar-gold-bright);
+            color: var(--bar-gold-bright);
+            box-shadow: 
+                0 4px 0 #8a6a1a,
+                0 0 20px rgba(212, 164, 55, 0.3);
+            font-size: 14px;
+            padding: 18px 40px;
         }
         
         .btn-start:hover {
-            background: rgba(255, 176, 0, 0.1);
-            box-shadow: 0 4px 16px var(--crt-amber-glow);
+            box-shadow: 
+                0 6px 0 #8a6a1a,
+                0 0 40px rgba(255, 213, 79, 0.5);
         }
         
-        /* ====== REALISTIC RESULT OVERLAY ====== */
+        /* ====== DARK RESULT OVERLAY ====== */
         .result-overlay {
             position: fixed;
             top: 0;
@@ -365,7 +491,7 @@
             align-items: center;
             justify-content: center;
             z-index: 999;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
         }
         
         .result-overlay.show {
@@ -373,47 +499,54 @@
         }
         
         .result-overlay.correct {
-            background: rgba(20, 40, 20, 0.95);
+            background: 
+                radial-gradient(circle at center, rgba(57, 255, 20, 0.1) 0%, transparent 50%),
+                rgba(10, 20, 10, 0.95);
         }
         
         .result-overlay.wrong {
-            background: rgba(40, 20, 20, 0.95);
+            background: 
+                radial-gradient(circle at center, rgba(204, 51, 51, 0.15) 0%, transparent 50%),
+                rgba(30, 10, 10, 0.95);
         }
         
         .result-content {
             text-align: center;
             padding: 40px;
-            background: var(--bg-screen);
-            border: 2px solid var(--border-main);
-            border-radius: 8px;
+            background: 
+                linear-gradient(180deg, var(--bar-purple) 0%, var(--bar-purple-dark) 100%);
+            border: 4px solid var(--bar-gold);
+            border-radius: 16px;
             max-width: 450px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            box-shadow: 
+                0 0 40px rgba(212, 164, 55, 0.2),
+                0 20px 60px rgba(0, 0, 0, 0.6);
         }
         
         .ascii-decoration {
-            font-family: 'VT323', monospace;
-            font-size: 14px;
-            color: var(--text-normal);
-            white-space: pre;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 32px;
             margin-bottom: 15px;
-            line-height: 1.3;
+            display: block;
         }
         
         .result-text {
-            font-family: 'VT323', monospace;
-            font-size: 28px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 20px;
             margin-bottom: 15px;
+            text-shadow: 0 0 10px currentColor;
         }
         
         .result-subtext {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            color: var(--text-dim);
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            color: var(--text-cream);
             margin-bottom: 25px;
             line-height: 1.6;
+            opacity: 0.9;
         }
         
-        /* ====== REALISTIC END SCREENS ====== */
+        /* ====== END SCREENS ====== */
         .end-screen {
             display: none;
             text-align: center;
@@ -425,48 +558,75 @@
         }
         
         .end-screen h2 {
-            font-family: 'VT323', monospace;
-            font-size: 32px;
-            font-weight: normal;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 24px;
             margin-bottom: 20px;
+            text-shadow: 0 0 15px currentColor;
         }
         
         .end-screen.game-over h2 {
-            color: var(--accent-red);
+            color: var(--bar-red-glow);
+            animation: deathFlash 0.5s ease-out;
+        }
+        
+        @keyframes deathFlash {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         
         .end-screen.victory h2 {
-            color: var(--accent-green);
+            color: var(--bar-gold-bright);
+            animation: victoryGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes victoryGlow {
+            0%, 100% { text-shadow: 0 0 10px var(--bar-gold); }
+            50% { text-shadow: 0 0 30px var(--bar-gold-bright), 0 0 50px var(--bar-gold); }
         }
         
         .final-score {
-            font-size: 18px;
-            color: var(--crt-amber);
+            font-family: 'VT323', monospace;
+            font-size: 22px;
+            color: var(--bar-gold);
             margin-bottom: 25px;
         }
         
         .pixel-skull, .pixel-trophy {
-            font-size: 48px;
+            font-size: 56px;
             margin-bottom: 20px;
             display: block;
         }
         
-        /* ====== REALISTIC START SCREEN ====== */
+        /* ====== START SCREEN ====== */
         .start-screen {
             text-align: center;
             padding: 20px;
         }
         
+        /* Player character area */
+        .player-area {
+            font-size: 60px;
+            margin: 15px 0;
+            animation: playerBob 2s ease-in-out infinite;
+        }
+        
+        @keyframes playerBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
         .start-screen .instructions {
-            font-size: 16px;
+            font-family: 'VT323', monospace;
+            font-size: 18px;
             line-height: 2;
-            color: var(--text-normal);
-            margin: 25px 0;
+            color: var(--text-cream);
+            margin: 20px 0;
             text-align: left;
             padding: 20px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-main);
-            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--bar-gold-dim);
+            border-radius: 8px;
         }
         
         .start-screen .instructions li {
@@ -475,48 +635,49 @@
         }
         
         .start-screen .instructions li::before {
-            content: '▸ ';
-            color: var(--crt-amber);
+            content: '► ';
+            color: var(--bar-gold);
         }
         
         .highlight {
-            color: var(--accent-red);
+            color: var(--bar-red-glow);
+            text-shadow: 0 0 5px rgba(204, 51, 51, 0.5);
         }
         
         .highlight-green {
-            color: var(--accent-green);
+            color: var(--neon-green);
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
         }
         
-        /* ====== REALISTIC DIVIDER ====== */
+        /* ====== DIVIDER ====== */
         .pixel-border {
-            height: 1px;
+            height: 3px;
             background: linear-gradient(90deg, 
                 transparent 0%, 
-                var(--border-main) 20%, 
-                var(--crt-amber) 50%, 
-                var(--border-main) 80%, 
+                var(--bar-gold-dim) 20%, 
+                var(--bar-gold) 50%, 
+                var(--bar-gold-dim) 80%, 
                 transparent 100%
             );
             margin: 20px 0;
+            box-shadow: 0 0 10px rgba(212, 164, 55, 0.3);
         }
         
-        /* ====== TERMINAL HEADER ====== */
+        /* ====== HEADER/FOOTER ====== */
         .retro-header {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            color: var(--text-dim);
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            color: var(--bar-gold-dim);
             text-align: center;
             margin-bottom: 15px;
-            padding: 8px;
-            background: var(--bg-panel);
-            border-bottom: 1px solid var(--border-main);
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(212, 164, 55, 0.3);
         }
         
         .retro-footer {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            color: var(--text-dim);
+            font-family: 'VT323', monospace;
+            font-size: 12px;
+            color: var(--bar-gold-dim);
             text-align: center;
             margin-top: 20px;
             opacity: 0.6;
@@ -524,10 +685,10 @@
         
         /* ====== RESPONSIVE ====== */
         @media (max-width: 600px) {
-            .title h1 { font-size: 24px; }
-            .btn { font-size: 14px; padding: 10px 20px; }
-            .news-headline { font-size: 15px; }
-            .chamber { width: 32px; height: 32px; font-size: 12px; }
+            .title h1 { font-size: 12px; }
+            .btn { font-size: 10px; padding: 12px 20px; }
+            .news-headline { font-size: 18px; }
+            .chamber { width: 36px; height: 36px; font-size: 8px; }
             .stats-bar { flex-direction: column; gap: 12px; }
         }
         
@@ -536,7 +697,7 @@
             display: none !important;
         }
         
-        /* ====== CRT VIGNETTE ====== */
+        /* ====== VIGNETTE ====== */
         .crt-curve {
             position: fixed;
             top: 0;
@@ -547,48 +708,51 @@
             z-index: 999;
             background: radial-gradient(
                 ellipse at center,
-                transparent 50%,
-                rgba(0, 0, 0, 0.3) 100%
+                transparent 40%,
+                rgba(0, 0, 0, 0.5) 100%
             );
         }
     </style>
 </head>
 <body>
-    <!-- CRT Vignette Overlay -->
+    <!-- Dark Vignette Overlay -->
     <div class="crt-curve"></div>
     
     <div class="game-container">
-        <!-- Terminal Header -->
+        <!-- Bar Header -->
         <div class="retro-header">
-            FAKE NEWS DETECTOR v1.0 | Terminal Session Active
+            ♠ LIAR'S NEWS BAR ♠ | Bluff or Truth?
         </div>
         
         <!-- ====== START SCREEN ====== -->
         <div id="start-screen" class="start-screen">
             <div class="title">
                 <h1>FAKE NEWS ROULETTE</h1>
-                <div class="subtitle">Test Your Media Literacy</div>
+                <div class="subtitle">♦ Riesci a Smascherare la Bugia? ♦</div>
             </div>
+            
+            <!-- Player Character -->
+            <div class="player-area">🦊</div>
             
             <div class="pixel-border"></div>
             
             <ul class="instructions">
-                <li>Hai <span class="highlight">3 vite</span> a disposizione</li>
-                <li>Ti verrà mostrata una <span class="highlight-green">notizia</span></li>
-                <li>Decidi se è <span class="highlight-green">VERA</span> o <span class="highlight">FALSA</span></li>
-                <li>Se <span class="highlight">sbagli</span> perdi una vita</li>
-                <li>Se <span class="highlight-green">indovini</span> guadagni punti</li>
-                <li>Sopravvivi a <span class="highlight-green">6 round</span> per vincere</li>
+                <li>Hai <span class="highlight">3 VITE</span> - non sprecarle</li>
+                <li>Ti verrà servita una <span class="highlight-green">NOTIZIA</span> sul tavolo</li>
+                <li>Scommetti se è <span class="highlight-green">VERA</span> o <span class="highlight">FALSA</span></li>
+                <li>Se <span class="highlight">SBAGLI</span> = 💥 BANG! Perdi una vita</li>
+                <li>Se <span class="highlight-green">INDOVINI</span> = 💰 Guadagni chips</li>
+                <li>Sopravvivi a <span class="highlight-green">6 ROUND</span> per vincere il jackpot!</li>
             </ul>
             
             <div class="pixel-border"></div>
             
             <button class="btn btn-start" onclick="startGame()">
-                INIZIA PARTITA
+                SIEDITI AL TAVOLO
             </button>
             
             <div class="retro-footer">
-                Versione 1.0 | © 2024 Fake News Detector
+                🎰 The House Always Knows... Or Does It? 🎰
             </div>
         </div>
         
@@ -611,22 +775,22 @@
             <!-- Stats Bar -->
             <div class="stats-bar">
                 <div class="stat">
-                    <span class="stat-label">VITE</span>
+                    <span class="stat-label">💀 VITE</span>
                     <span class="lives" id="lives">● ● ●</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">ROUND</span>
+                    <span class="stat-label">🎯 ROUND</span>
                     <span class="stat-value" id="round">1/6</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">PUNTI</span>
+                    <span class="stat-label">💰 CHIPS</span>
                     <span class="stat-value" id="score">0</span>
                 </div>
             </div>
             
             <!-- News Card -->
             <div class="news-card" id="news-card">
-                <div class="news-number" id="news-number">NOTIZIA #1</div>
+                <div class="news-number" id="news-number">♠ CARTA #1 ♠</div>
                 <div class="news-source" id="news-source">Fonte: Loading...</div>
                 <div class="news-headline" id="news-headline">Caricamento notizia...</div>
                 <div class="news-details" id="news-details"></div>
@@ -635,10 +799,10 @@
             <!-- Decision Buttons -->
             <div class="button-container">
                 <button class="btn btn-true" onclick="makeChoice(true)">
-                    VERA
+                    ✓ VERA
                 </button>
                 <button class="btn btn-false" onclick="makeChoice(false)">
-                    FALSA
+                    ✗ FALSA
                 </button>
             </div>
         </div>
@@ -646,25 +810,25 @@
         <!-- ====== GAME OVER SCREEN ====== -->
         <div id="gameover-screen" class="end-screen game-over hidden">
             <div class="pixel-skull">💀</div>
-            <h2>GAME OVER</h2>
+            <h2>BANG! SEI FUORI</h2>
             <div class="pixel-border"></div>
-            <p class="final-score">Punteggio Finale: <span id="final-score-go">0</span></p>
-            <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 25px;">
-                Le fake news ti hanno sconfitto...
+            <p class="final-score">Chips Vinti: <span id="final-score-go">0</span> 💰</p>
+            <p style="font-size: 16px; color: var(--text-cream); margin-bottom: 25px; opacity: 0.8;">
+                Il Bar ha vinto questa volta...
             </p>
             <button class="btn btn-start" onclick="startGame()">
-                RIPROVA
+                RITENTA LA FORTUNA
             </button>
         </div>
         
         <!-- ====== VICTORY SCREEN ====== -->
         <div id="victory-screen" class="end-screen victory hidden">
             <div class="pixel-trophy">🏆</div>
-            <h2>VITTORIA!</h2>
+            <h2>JACKPOT!</h2>
             <div class="pixel-border"></div>
-            <p class="final-score">Punteggio Finale: <span id="final-score-v">0</span></p>
-            <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 25px;">
-                Sei un vero cacciatore di fake news!
+            <p class="final-score">Chips Vinti: <span id="final-score-v">0</span> 💰</p>
+            <p style="font-size: 16px; color: var(--text-cream); margin-bottom: 25px; opacity: 0.8;">
+                Hai battuto il banco! Sei il re del bluff!
             </p>
             <button class="btn btn-start" onclick="startGame()">
                 GIOCA ANCORA
@@ -672,7 +836,7 @@
         </div>
         
         <div class="retro-footer">
-            Fake News Detector | Media Literacy Tool
+            ♠ ♥ LIAR'S NEWS BAR ♦ ♣ | All Bets Are Final
         </div>
     </div>
     
@@ -682,7 +846,7 @@
             <div class="ascii-decoration" id="result-ascii"></div>
             <div class="result-text" id="result-text">RISULTATO</div>
             <div class="result-subtext" id="result-subtext">Spiegazione...</div>
-            <button class="btn btn-start" onclick="nextRound()">CONTINUA</button>
+            <button class="btn btn-start" onclick="nextRound()">PROSSIMA CARTA</button>
         </div>
     </div>
 
@@ -902,9 +1066,9 @@
             gameState.currentNews = newsData[randomIndex];
             gameState.usedNews.push(randomIndex);
             
-            // Update news card - realistic style
-            document.getElementById('news-number').textContent = `NOTIZIA #${gameState.round}`;
-            document.getElementById('news-source').textContent = `Fonte: ${gameState.currentNews.source}`;
+            // Update news card - Liar's Bar style
+            document.getElementById('news-number').textContent = `♠ CARTA #${gameState.round} ♠`;
+            document.getElementById('news-source').textContent = `📰 ${gameState.currentNews.source}`;
             document.getElementById('news-headline').textContent = gameState.currentNews.headline;
             document.getElementById('news-details').textContent = gameState.currentNews.details;
             
@@ -913,14 +1077,14 @@
         }
 
         function updateUI() {
-            // Update lives - realistic style ● ● ● or ● ● ○
-            const livesDisplay = '● '.repeat(gameState.lives) + '○ '.repeat(3 - gameState.lives);
+            // Update lives - Liar's Bar style with hearts
+            const livesDisplay = '❤️ '.repeat(gameState.lives) + '🖤 '.repeat(3 - gameState.lives);
             document.getElementById('lives').textContent = livesDisplay.trim();
             
             // Update round
             document.getElementById('round').textContent = `${gameState.round}/${gameState.maxRounds}`;
             
-            // Update score
+            // Update score (chips)
             document.getElementById('score').textContent = gameState.score;
         }
 
@@ -934,9 +1098,9 @@
                     chamber.classList.add('empty');
                     chamber.textContent = '✓';
                 } else if (i === gameState.round) {
-                    // Current chamber
+                    // Current chamber - bullet ready
                     chamber.classList.add('current');
-                    chamber.textContent = '▶';
+                    chamber.textContent = '●';
                 } else {
                     // Future chambers
                     chamber.textContent = i;
@@ -953,23 +1117,23 @@
             const asciiResult = document.getElementById('result-ascii');
             
             if (isCorrect) {
-                // Correct answer
+                // Correct answer - You called the bluff!
                 playSound('correct');
                 gameState.score += 100;
                 
                 overlay.className = 'result-overlay show correct';
-                asciiResult.textContent = '✓ CORRETTO';
-                document.getElementById('result-text').textContent = 'RISPOSTA ESATTA';
-                document.getElementById('result-text').style.color = 'var(--accent-green)';
+                asciiResult.textContent = '💰';
+                document.getElementById('result-text').textContent = 'HAI VINTO!';
+                document.getElementById('result-text').style.color = 'var(--neon-green)';
             } else {
-                // Wrong answer
+                // Wrong answer - BANG!
                 playSound('wrong');
                 gameState.lives--;
                 
                 overlay.className = 'result-overlay show wrong';
-                asciiResult.textContent = '✗ SBAGLIATO';
-                document.getElementById('result-text').textContent = 'RISPOSTA ERRATA';
-                document.getElementById('result-text').style.color = 'var(--accent-red)';
+                asciiResult.textContent = '💥';
+                document.getElementById('result-text').textContent = 'BANG!';
+                document.getElementById('result-text').style.color = 'var(--bar-red-glow)';
             }
             
             document.getElementById('result-subtext').textContent = gameState.currentNews.explanation;
