@@ -1,56 +1,1210 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Long-Form Puzzle Game</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <title>🎮 FAKE NEWS ROULETTE - 8-Bit Edition</title>
     <style>
-        body {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+        /* ====== LIAR'S BAR INSPIRED 8-BIT RETRO STYLE ====== */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        :root {
+            /* LIAR'S BAR COLOR PALETTE - Dark Bar Atmosphere */
+            --bar-purple: #2d1b4e;
+            --bar-purple-dark: #1a0f2e;
+            --bar-purple-light: #4a2d7a;
+            --bar-red: #8b2a2a;
+            --bar-red-glow: #cc3333;
+            --bar-gold: #d4a437;
+            --bar-gold-dim: #a67c28;
+            --bar-gold-bright: #ffd54f;
+            --neon-pink: #ff4d8d;
+            --neon-cyan: #00d4ff;
+            --neon-green: #39ff14;
+            --wood-dark: #2a1f14;
+            --wood-medium: #3d2b1f;
+            --wood-light: #5c4033;
+            --felt-green: #1a4d2e;
+            --text-cream: #f5e6d3;
+            --text-gold: #ffd700;
+            --shadow-dark: rgba(0, 0, 0, 0.8);
+        }
+        
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        
+        /* ====== SHADY BAR BACKGROUND ====== */
+        body {
+            background: 
+                /* Smoke/haze effect */
+                radial-gradient(ellipse at 30% 20%, rgba(100, 50, 120, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(139, 42, 42, 0.1) 0%, transparent 40%),
+                /* Neon light glow from above */
+                radial-gradient(ellipse at 50% 0%, rgba(255, 77, 141, 0.08) 0%, transparent 40%),
+                /* Base gradient */
+                linear-gradient(180deg, 
+                    var(--bar-purple-dark) 0%, 
+                    #0d0815 30%,
+                    #080510 70%,
+                    #050308 100%
+                );
+            font-family: 'VT323', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-cream);
+            overflow-x: hidden;
+            position: relative;
         }
-        h1 {
+        
+        /* ====== AMBIENT LIGHT FLICKER ====== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                /* Scanlines for 8-bit effect */
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(0, 0, 0, 0.15) 3px,
+                    rgba(0, 0, 0, 0.15) 6px
+                );
+            pointer-events: none;
+            z-index: 1000;
+            animation: flicker 8s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.9; }
+            94% { opacity: 1; }
+            97% { opacity: 0.95; }
+        }
+        
+        /* ====== POKER TABLE / BAR COUNTER CONTAINER ====== */
+        .game-container {
+            max-width: 700px;
+            width: 95%;
+            background: 
+                /* Felt texture overlay */
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0,0,0,0.03) 2px,
+                    rgba(0,0,0,0.03) 4px
+                ),
+                /* Main felt gradient */
+                linear-gradient(180deg, 
+                    var(--felt-green) 0%, 
+                    #0f3d22 50%,
+                    #0a2a18 100%
+                );
+            border: 8px solid var(--wood-dark);
+            border-radius: 16px;
+            position: relative;
+            padding: 25px;
+            box-shadow: 
+                /* Inner glow */
+                inset 0 0 60px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(212, 164, 55, 0.1),
+                /* Wood frame shadow */
+                0 0 0 4px var(--wood-medium),
+                0 0 0 8px var(--wood-light),
+                /* Ambient shadow */
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                /* Neon underglow */
+                0 0 40px rgba(255, 77, 141, 0.15);
+        }
+        
+        /* Decorative corner brass plates */
+        .game-container::before,
+        .game-container::after {
+            content: '◆';
+            position: absolute;
+            font-size: 20px;
+            color: var(--bar-gold);
+            text-shadow: 0 0 10px var(--bar-gold-dim);
+        }
+        .game-container::before { top: 8px; left: 12px; }
+        .game-container::after { bottom: 8px; right: 12px; }
+        
+        /* ====== NEON SIGN TITLE ====== */
+        .title {
             text-align: center;
-            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
         }
-        .level {
-            border: 1px solid #bdc3c7;
-            margin: 10px 0;
+        
+        .title h1 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 18px;
+            color: var(--neon-pink);
+            text-shadow: 
+                0 0 5px var(--neon-pink),
+                0 0 10px var(--neon-pink),
+                0 0 20px var(--neon-pink),
+                0 0 40px rgba(255, 77, 141, 0.5),
+                2px 2px 0 var(--bar-purple-dark);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            animation: neonFlicker 3s infinite;
+        }
+        
+        @keyframes neonFlicker {
+            0%, 100% { opacity: 1; text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; text-shadow: 0 0 2px var(--neon-pink); }
+            94% { opacity: 1; text-shadow: 0 0 5px var(--neon-pink), 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink); }
+            96% { opacity: 0.9; }
+        }
+        
+        .title .subtitle {
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            color: var(--bar-gold);
+            text-shadow: 0 0 8px rgba(212, 164, 55, 0.5);
+            letter-spacing: 3px;
+        }
+        
+        /* ====== POKER CARD STYLE NEWS ====== */
+        .news-card {
+            background: 
+                /* Card texture */
+                linear-gradient(135deg, 
+                    #f8f4e8 0%, 
+                    #f0e8d8 50%,
+                    #e8dcc8 100%
+                );
+            border: 3px solid var(--wood-dark);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            color: #1a1a1a;
+            box-shadow: 
+                4px 4px 0 var(--wood-medium),
+                8px 8px 20px rgba(0, 0, 0, 0.4),
+                inset 0 0 30px rgba(0, 0, 0, 0.05);
+            transform: rotate(-0.5deg);
+        }
+        
+        /* Card corner decorations */
+        .news-card::before {
+            content: '♠ ♥ ♦ ♣';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 12px;
+            color: var(--bar-red);
+            letter-spacing: 4px;
+        }
+        
+        .news-card::after {
+            content: '♣ ♦ ♥ ♠';
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 12px;
+            color: #1a1a1a;
+            letter-spacing: 4px;
+        }
+        
+        .news-number {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            color: var(--bar-red);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .news-source {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            font-style: italic;
+            border-bottom: 1px dashed #999;
+            padding-bottom: 8px;
+        }
+        
+        .news-headline {
+            font-family: 'VT323', monospace;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 1.3;
+            color: #0a0a0a;
+            margin-bottom: 12px;
+        }
+        
+        .news-details {
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* ====== REVOLVER CYLINDER - Liar's Bar Style ====== */
+        .revolver-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            gap: 8px;
+            padding: 20px;
+            background: 
+                radial-gradient(circle at center, 
+                    rgba(212, 164, 55, 0.1) 0%, 
+                    transparent 70%
+                ),
+                linear-gradient(180deg, 
+                    rgba(0,0,0,0.3) 0%, 
+                    transparent 50%,
+                    rgba(0,0,0,0.2) 100%
+                );
+            border: 2px solid var(--bar-gold-dim);
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        /* Revolver ASCII art above chambers */
+        .revolver-section::before {
+            content: '🔫';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            filter: drop-shadow(0 0 5px var(--bar-gold));
+        }
+        
+        .chamber {
+            width: 44px;
+            height: 44px;
+            border: 3px solid var(--bar-gold-dim);
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, 
+                    #3d3d3d 0%, 
+                    #1a1a1a 50%,
+                    #0a0a0a 100%
+                );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            color: var(--bar-gold-dim);
+            transition: all 0.2s ease;
+            box-shadow: 
+                inset 0 2px 4px rgba(255,255,255,0.1),
+                inset 0 -2px 4px rgba(0,0,0,0.3),
+                0 2px 8px rgba(0,0,0,0.5);
+        }
+        
+        .chamber.empty {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 
+                0 0 10px rgba(57, 255, 20, 0.4),
+                inset 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+        
+        .chamber.loaded {
+            border-color: var(--bar-red-glow);
+            color: var(--bar-red-glow);
+            box-shadow: 
+                0 0 10px rgba(204, 51, 51, 0.4),
+                inset 0 0 10px rgba(204, 51, 51, 0.1);
+        }
+        
+        .chamber.current {
+            transform: scale(1.15);
+            border-color: var(--bar-gold-bright);
+            color: var(--bar-gold-bright);
+            box-shadow: 
+                0 0 15px var(--bar-gold),
+                0 0 30px rgba(212, 164, 55, 0.3);
+            animation: chamberPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes chamberPulse {
+            0%, 100% { box-shadow: 0 0 15px var(--bar-gold), 0 0 30px rgba(212, 164, 55, 0.3); }
+            50% { box-shadow: 0 0 20px var(--bar-gold-bright), 0 0 40px rgba(255, 213, 79, 0.4); }
+        }
+        
+        /* ====== CASINO CHIP STYLE STATS ====== */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
             padding: 15px;
-            border-radius: 5px;
-            background-color: #ecf0f1;
+            background: 
+                linear-gradient(180deg, 
+                    rgba(0,0,0,0.4) 0%, 
+                    rgba(0,0,0,0.2) 100%
+                );
+            border: 2px solid var(--bar-gold-dim);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-label {
+            font-family: 'VT323', monospace;
+            color: var(--bar-gold);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .stat-value {
+            font-family: 'Press Start 2P', monospace;
+            color: var(--text-cream);
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(245, 230, 211, 0.3);
+        }
+        
+        .lives {
+            color: var(--bar-red-glow);
+            font-size: 20px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px rgba(204, 51, 51, 0.5);
+        }
+        
+        /* ====== POKER BUTTONS ====== */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            padding: 15px 30px;
+            border: 3px solid;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--bar-purple-dark);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.3s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-true {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 
+                0 4px 0 #1a5a0a,
+                0 0 20px rgba(57, 255, 20, 0.2);
+        }
+        
+        .btn-true:hover {
+            box-shadow: 
+                0 6px 0 #1a5a0a,
+                0 0 30px rgba(57, 255, 20, 0.4);
+        }
+        
+        .btn-false {
+            border-color: var(--bar-red-glow);
+            color: var(--bar-red-glow);
+            box-shadow: 
+                0 4px 0 #5a1a1a,
+                0 0 20px rgba(204, 51, 51, 0.2);
+        }
+        
+        .btn-false:hover {
+            box-shadow: 
+                0 6px 0 #5a1a1a,
+                0 0 30px rgba(204, 51, 51, 0.4);
+        }
+        
+        .btn-start {
+            border-color: var(--bar-gold-bright);
+            color: var(--bar-gold-bright);
+            box-shadow: 
+                0 4px 0 #8a6a1a,
+                0 0 20px rgba(212, 164, 55, 0.3);
+            font-size: 14px;
+            padding: 18px 40px;
+        }
+        
+        .btn-start:hover {
+            box-shadow: 
+                0 6px 0 #8a6a1a,
+                0 0 40px rgba(255, 213, 79, 0.5);
+        }
+        
+        /* ====== DARK RESULT OVERLAY ====== */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            backdrop-filter: blur(8px);
+        }
+        
+        .result-overlay.show {
+            display: flex;
+        }
+        
+        .result-overlay.correct {
+            background: 
+                radial-gradient(circle at center, rgba(57, 255, 20, 0.1) 0%, transparent 50%),
+                rgba(10, 20, 10, 0.95);
+        }
+        
+        .result-overlay.wrong {
+            background: 
+                radial-gradient(circle at center, rgba(204, 51, 51, 0.15) 0%, transparent 50%),
+                rgba(30, 10, 10, 0.95);
+        }
+        
+        .result-content {
+            text-align: center;
+            padding: 40px;
+            background: 
+                linear-gradient(180deg, var(--bar-purple) 0%, var(--bar-purple-dark) 100%);
+            border: 4px solid var(--bar-gold);
+            border-radius: 16px;
+            max-width: 450px;
+            box-shadow: 
+                0 0 40px rgba(212, 164, 55, 0.2),
+                0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+        
+        .ascii-decoration {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 32px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .result-text {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .result-subtext {
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            color: var(--text-cream);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        /* ====== END SCREENS ====== */
+        .end-screen {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .end-screen.show {
+            display: block;
+        }
+        
+        .end-screen h2 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px currentColor;
+        }
+        
+        .end-screen.game-over h2 {
+            color: var(--bar-red-glow);
+            animation: deathFlash 0.5s ease-out;
+        }
+        
+        @keyframes deathFlash {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .end-screen.victory h2 {
+            color: var(--bar-gold-bright);
+            animation: victoryGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes victoryGlow {
+            0%, 100% { text-shadow: 0 0 10px var(--bar-gold); }
+            50% { text-shadow: 0 0 30px var(--bar-gold-bright), 0 0 50px var(--bar-gold); }
+        }
+        
+        .final-score {
+            font-family: 'VT323', monospace;
+            font-size: 22px;
+            color: var(--bar-gold);
+            margin-bottom: 25px;
+        }
+        
+        .pixel-skull, .pixel-trophy {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        /* ====== START SCREEN ====== */
+        .start-screen {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Player character area */
+        .player-area {
+            font-size: 60px;
+            margin: 15px 0;
+            animation: playerBob 2s ease-in-out infinite;
+        }
+        
+        @keyframes playerBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .start-screen .instructions {
+            font-family: 'VT323', monospace;
+            font-size: 18px;
+            line-height: 2;
+            color: var(--text-cream);
+            margin: 20px 0;
+            text-align: left;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--bar-gold-dim);
+            border-radius: 8px;
+        }
+        
+        .start-screen .instructions li {
+            margin-bottom: 8px;
+            list-style: none;
+        }
+        
+        .start-screen .instructions li::before {
+            content: '► ';
+            color: var(--bar-gold);
+        }
+        
+        .highlight {
+            color: var(--bar-red-glow);
+            text-shadow: 0 0 5px rgba(204, 51, 51, 0.5);
+        }
+        
+        .highlight-green {
+            color: var(--neon-green);
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+        }
+        
+        /* ====== DIVIDER ====== */
+        .pixel-border {
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--bar-gold-dim) 20%, 
+                var(--bar-gold) 50%, 
+                var(--bar-gold-dim) 80%, 
+                transparent 100%
+            );
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(212, 164, 55, 0.3);
+        }
+        
+        /* ====== HEADER/FOOTER ====== */
+        .retro-header {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            color: var(--bar-gold-dim);
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(212, 164, 55, 0.3);
+        }
+        
+        .retro-footer {
+            font-family: 'VT323', monospace;
+            font-size: 12px;
+            color: var(--bar-gold-dim);
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0.6;
+        }
+        
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 600px) {
+            .title h1 { font-size: 12px; }
+            .btn { font-size: 10px; padding: 12px 20px; }
+            .news-headline { font-size: 18px; }
+            .chamber { width: 36px; height: 36px; font-size: 8px; }
+            .stats-bar { flex-direction: column; gap: 12px; }
+        }
+        
+        /* ====== HIDDEN UTILITY ====== */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* ====== VIGNETTE ====== */
+        .crt-curve {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 40%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to the Long-Form Puzzle Game</h1>
-        <div class="level">
-            <h2>Level 1: Introduction</h2>
-            <p>Get ready for an immersive puzzle-solving experience!</p>
-            <button onclick="startLevel(1)">Start Level 1</button>
+    <!-- Dark Vignette Overlay -->
+    <div class="crt-curve"></div>
+    
+    <div class="game-container">
+        <!-- Bar Header -->
+        <div class="retro-header">
+            ♠ LIAR'S NEWS BAR ♠ | Bluff or Truth?
         </div>
-        <div class="level">
-            <h2>Level 2: Intermediate Challenges</h2>
-            <p>Put your skills to the test with these intermediate puzzles.</p>
-            <button onclick="startLevel(2)">Start Level 2</button>
+        
+        <!-- ====== START SCREEN ====== -->
+        <div id="start-screen" class="start-screen">
+            <div class="title">
+                <h1>FAKE NEWS ROULETTE</h1>
+                <div class="subtitle">♦ Riesci a Smascherare la Bugia? ♦</div>
+            </div>
+            
+            <!-- Player Character -->
+            <div class="player-area">🦊</div>
+            
+            <div class="pixel-border"></div>
+            
+            <ul class="instructions">
+                <li>Hai <span class="highlight">3 VITE</span> - non sprecarle</li>
+                <li>Ti verrà servita una <span class="highlight-green">NOTIZIA</span> sul tavolo</li>
+                <li>Scommetti se è <span class="highlight-green">VERA</span> o <span class="highlight">FALSA</span></li>
+                <li>Se <span class="highlight">SBAGLI</span> = 💥 BANG! Perdi una vita</li>
+                <li>Se <span class="highlight-green">INDOVINI</span> = 💰 Guadagni chips</li>
+                <li>Sopravvivi a <span class="highlight-green">6 ROUND</span> per vincere il jackpot!</li>
+            </ul>
+            
+            <div class="pixel-border"></div>
+            
+            <button class="btn btn-start" onclick="startGame()">
+                SIEDITI AL TAVOLO
+            </button>
+            
+            <div class="retro-footer">
+                🎰 The House Always Knows... Or Does It? 🎰
+            </div>
         </div>
-        <div class="level">
-            <h2>Level 3: Expert Puzzles</h2>
-            <p>Only the best can solve these expert-level puzzles!</p>
-            <button onclick="startLevel(3)">Start Level 3</button>
+        
+        <!-- ====== GAME SCREEN ====== -->
+        <div id="game-screen" class="hidden">
+            <div class="title">
+                <h1>FAKE NEWS ROULETTE</h1>
+            </div>
+            
+            <!-- Revolver Chambers -->
+            <div class="revolver-section">
+                <div class="chamber" id="chamber-1">1</div>
+                <div class="chamber" id="chamber-2">2</div>
+                <div class="chamber" id="chamber-3">3</div>
+                <div class="chamber" id="chamber-4">4</div>
+                <div class="chamber" id="chamber-5">5</div>
+                <div class="chamber" id="chamber-6">6</div>
+            </div>
+            
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat">
+                    <span class="stat-label">💀 VITE</span>
+                    <span class="lives" id="lives">● ● ●</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">🎯 ROUND</span>
+                    <span class="stat-value" id="round">1/6</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">💰 CHIPS</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+            </div>
+            
+            <!-- News Card -->
+            <div class="news-card" id="news-card">
+                <div class="news-number" id="news-number">♠ CARTA #1 ♠</div>
+                <div class="news-source" id="news-source">Fonte: Loading...</div>
+                <div class="news-headline" id="news-headline">Caricamento notizia...</div>
+                <div class="news-details" id="news-details"></div>
+            </div>
+            
+            <!-- Decision Buttons -->
+            <div class="button-container">
+                <button class="btn btn-true" onclick="makeChoice(true)">
+                    ✓ VERA
+                </button>
+                <button class="btn btn-false" onclick="makeChoice(false)">
+                    ✗ FALSA
+                </button>
+            </div>
+        </div>
+        
+        <!-- ====== GAME OVER SCREEN ====== -->
+        <div id="gameover-screen" class="end-screen game-over hidden">
+            <div class="pixel-skull">💀</div>
+            <h2>BANG! SEI FUORI</h2>
+            <div class="pixel-border"></div>
+            <p class="final-score">Chips Vinti: <span id="final-score-go">0</span> 💰</p>
+            <p style="font-size: 16px; color: var(--text-cream); margin-bottom: 25px; opacity: 0.8;">
+                Il Bar ha vinto questa volta...
+            </p>
+            <button class="btn btn-start" onclick="startGame()">
+                RITENTA LA FORTUNA
+            </button>
+        </div>
+        
+        <!-- ====== VICTORY SCREEN ====== -->
+        <div id="victory-screen" class="end-screen victory hidden">
+            <div class="pixel-trophy">🏆</div>
+            <h2>JACKPOT!</h2>
+            <div class="pixel-border"></div>
+            <p class="final-score">Chips Vinti: <span id="final-score-v">0</span> 💰</p>
+            <p style="font-size: 16px; color: var(--text-cream); margin-bottom: 25px; opacity: 0.8;">
+                Hai battuto il banco! Sei il re del bluff!
+            </p>
+            <button class="btn btn-start" onclick="startGame()">
+                GIOCA ANCORA
+            </button>
+        </div>
+        
+        <div class="retro-footer">
+            ♠ ♥ LIAR'S NEWS BAR ♦ ♣ | All Bets Are Final
         </div>
     </div>
+    
+    <!-- ====== RESULT OVERLAY ====== -->
+    <div id="result-overlay" class="result-overlay">
+        <div class="result-content">
+            <div class="ascii-decoration" id="result-ascii"></div>
+            <div class="result-text" id="result-text">RISULTATO</div>
+            <div class="result-subtext" id="result-subtext">Spiegazione...</div>
+            <button class="btn btn-start" onclick="nextRound()">PROSSIMA CARTA</button>
+        </div>
+    </div>
+
+    <script>
+        // ====== GAME DATA ======
+        const newsData = [
+            {
+                headline: "Gli scienziati hanno scoperto che le piante comunicano tra loro attraverso segnali elettrici sotterranei",
+                details: "Ricerche dell'Università di Aberdeen hanno dimostrato che le piante inviano impulsi elettrici attraverso le radici per avvertire le piante vicine di pericoli.",
+                source: "Nature Scientific Journal",
+                isReal: true,
+                explanation: "VERO! Le piante comunicano davvero attraverso reti di funghi micorrizici e segnali elettrochimici."
+            },
+            {
+                headline: "La Torre di Pisa ha smesso di inclinarsi ed è ora perfettamente dritta",
+                details: "Ingegneri italiani affermano che i lavori di restauro degli ultimi 20 anni hanno completamente raddrizzato la famosa torre.",
+                source: "Il Giornale delle Meraviglie",
+                isReal: false,
+                explanation: "FALSO! La Torre di Pisa è ancora inclinata (circa 4 gradi). I lavori l'hanno solo stabilizzata."
+            },
+            {
+                headline: "I polpi hanno tre cuori e sangue blu",
+                details: "Studi di biologia marina confermano che questi molluschi possiedono un sistema circolatorio unico nel regno animale.",
+                source: "Marine Biology Today",
+                isReal: true,
+                explanation: "VERO! I polpi hanno effettivamente tre cuori e il loro sangue contiene emocianina (a base di rame) che lo rende blu."
+            },
+            {
+                headline: "Il WiFi delle scuole causa mal di testa agli studenti secondo nuovo studio",
+                details: "Un gruppo di genitori preoccupati ha pubblicato uno studio che collega le onde WiFi ai problemi di salute dei bambini.",
+                source: "Mamme Informate Online",
+                isReal: false,
+                explanation: "FALSO! Non esistono prove scientifiche che il WiFi causi mal di testa. È una fake news molto diffusa."
+            },
+            {
+                headline: "Il miele non scade mai e può essere consumato anche dopo millenni",
+                details: "Archeologi hanno trovato miele di 3000 anni nelle tombe egizie ancora perfettamente commestibile.",
+                source: "Archaeology Magazine",
+                isReal: true,
+                explanation: "VERO! Il miele ha proprietà antibatteriche naturali che lo rendono praticamente eterno se conservato correttamente."
+            },
+            {
+                headline: "Bere 8 bicchieri d'acqua al giorno è scientificamente necessario per la salute",
+                details: "Gli esperti avvertono che non bere esattamente 8 bicchieri può causare disidratazione cronica.",
+                source: "Salute & Benessere Magazine",
+                isReal: false,
+                explanation: "FALSO! Non esiste base scientifica per questa regola specifica. Il fabbisogno varia in base a persona, attività e clima."
+            },
+            {
+                headline: "I corvi possono riconoscere i volti umani e ricordare chi li ha trattati male",
+                details: "Ricerche dell'Università di Washington mostrano che i corvi possono ricordare volti per anni.",
+                source: "Animal Cognition Research",
+                isReal: true,
+                explanation: "VERO! I corvi hanno eccellenti capacità cognitive e possono ricordare volti umani per oltre 5 anni."
+            },
+            {
+                headline: "I vaccini contengono microchip per tracciare le persone",
+                details: "Fonti anonime rivelano che le case farmaceutiche inseriscono dispositivi di tracciamento nei vaccini.",
+                source: "Verità Nascosta Blog",
+                isReal: false,
+                explanation: "FALSO! È una delle teorie del complotto più diffuse e completamente priva di fondamento scientifico."
+            },
+            {
+                headline: "Le banane sono leggermente radioattive",
+                details: "Il potassio-40 presente nelle banane emette piccole quantità di radiazioni, creando l'unità di misura 'dose equivalente di banana'.",
+                source: "Physics World",
+                isReal: true,
+                explanation: "VERO! Le banane contengono potassio-40, ma la quantità è così minima da essere completamente innocua."
+            },
+            {
+                headline: "Il 5G causa il coronavirus secondo ricercatori indipendenti",
+                details: "Un gruppo di scienziati 'non allineati' ha pubblicato uno studio che collega le antenne 5G alla pandemia.",
+                source: "Alternative Science News",
+                isReal: false,
+                explanation: "FALSO! Il 5G è una tecnologia di comunicazione radio e non ha alcuna relazione con i virus."
+            },
+            {
+                headline: "Gli astronauti crescono fino a 5 cm nello spazio",
+                details: "L'assenza di gravità permette alla colonna vertebrale di espandersi temporaneamente.",
+                source: "NASA Official Reports",
+                isReal: true,
+                explanation: "VERO! Senza gravità, i dischi vertebrali si espandono. Gli astronauti tornano alla loro altezza normale sulla Terra."
+            },
+            {
+                headline: "La Terra è piatta secondo nuove misurazioni satellitari",
+                details: "Esperti di geodesia alternativa affermano di aver prove che contraddicono la scienza mainstream.",
+                source: "Flat Earth Society News",
+                isReal: false,
+                explanation: "FALSO! La Terra è un geoide (quasi sferica). Migliaia di prove scientifiche lo confermano."
+            }
+        ];
+
+        // ====== GAME STATE ======
+        let gameState = {
+            lives: 3,
+            round: 1,
+            score: 0,
+            currentNews: null,
+            usedNews: [],
+            maxRounds: 6
+        };
+
+        // ====== AUDIO (8-bit style using Web Audio API) ======
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            switch(type) {
+                case 'correct':
+                    oscillator.frequency.setValueAtTime(523, audioCtx.currentTime); // C5
+                    oscillator.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1); // E5
+                    oscillator.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2); // G5
+                    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 0.4);
+                    break;
+                case 'wrong':
+                    oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+                    oscillator.frequency.setValueAtTime(150, audioCtx.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(100, audioCtx.currentTime + 0.2);
+                    oscillator.type = 'sawtooth';
+                    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 0.3);
+                    break;
+                case 'click':
+                    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    oscillator.type = 'square';
+                    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 0.05);
+                    break;
+                case 'gameover':
+                    oscillator.frequency.setValueAtTime(294, audioCtx.currentTime); // D4
+                    oscillator.frequency.setValueAtTime(277, audioCtx.currentTime + 0.3); // C#4
+                    oscillator.frequency.setValueAtTime(262, audioCtx.currentTime + 0.6); // C4
+                    oscillator.frequency.setValueAtTime(247, audioCtx.currentTime + 0.9); // B3
+                    oscillator.type = 'sawtooth';
+                    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 1.2);
+                    break;
+                case 'victory':
+                    const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+                    notes.forEach((freq, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15);
+                        osc.type = 'square';
+                        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.15);
+                        osc.start(audioCtx.currentTime + i * 0.15);
+                        osc.stop(audioCtx.currentTime + i * 0.15 + 0.2);
+                    });
+                    break;
+            }
+        }
+
+        // ====== GAME FUNCTIONS ======
+        function startGame() {
+            initAudio();
+            playSound('click');
+            
+            // Reset game state
+            gameState = {
+                lives: 3,
+                round: 1,
+                score: 0,
+                currentNews: null,
+                usedNews: [],
+                maxRounds: 6
+            };
+            
+            // Hide all screens
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('gameover-screen').classList.add('hidden');
+            document.getElementById('victory-screen').classList.add('hidden');
+            
+            // Show game screen
+            document.getElementById('game-screen').classList.remove('hidden');
+            
+            // Update UI
+            updateUI();
+            loadNews();
+        }
+
+        function loadNews() {
+            // Get available news indices (not yet used)
+            let availableIndices = newsData
+                .map((_, index) => index)
+                .filter(index => !gameState.usedNews.includes(index));
+            
+            // Reset used news if we've gone through all
+            if (availableIndices.length === 0) {
+                gameState.usedNews = [];
+                availableIndices = newsData.map((_, index) => index);
+            }
+            
+            // Pick random news
+            const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            gameState.currentNews = newsData[randomIndex];
+            gameState.usedNews.push(randomIndex);
+            
+            // Update news card - Liar's Bar style
+            document.getElementById('news-number').textContent = `♠ CARTA #${gameState.round} ♠`;
+            document.getElementById('news-source').textContent = `📰 ${gameState.currentNews.source}`;
+            document.getElementById('news-headline').textContent = gameState.currentNews.headline;
+            document.getElementById('news-details').textContent = gameState.currentNews.details;
+            
+            // Update chambers
+            updateChambers();
+        }
+
+        function updateUI() {
+            // Update lives - Liar's Bar style with hearts
+            const livesDisplay = '❤️ '.repeat(gameState.lives) + '🖤 '.repeat(3 - gameState.lives);
+            document.getElementById('lives').textContent = livesDisplay.trim();
+            
+            // Update round
+            document.getElementById('round').textContent = `${gameState.round}/${gameState.maxRounds}`;
+            
+            // Update score (chips)
+            document.getElementById('score').textContent = gameState.score;
+        }
+
+        function updateChambers() {
+            for (let i = 1; i <= 6; i++) {
+                const chamber = document.getElementById(`chamber-${i}`);
+                chamber.classList.remove('current', 'loaded', 'empty');
+                
+                if (i < gameState.round) {
+                    // Past chambers - show result
+                    chamber.classList.add('empty');
+                    chamber.textContent = '✓';
+                } else if (i === gameState.round) {
+                    // Current chamber - bullet ready
+                    chamber.classList.add('current');
+                    chamber.textContent = '●';
+                } else {
+                    // Future chambers
+                    chamber.textContent = i;
+                }
+            }
+        }
+
+        function makeChoice(choiceIsReal) {
+            initAudio();
+            playSound('click');
+            
+            const isCorrect = choiceIsReal === gameState.currentNews.isReal;
+            const overlay = document.getElementById('result-overlay');
+            const asciiResult = document.getElementById('result-ascii');
+            
+            if (isCorrect) {
+                // Correct answer - You called the bluff!
+                playSound('correct');
+                gameState.score += 100;
+                
+                overlay.className = 'result-overlay show correct';
+                asciiResult.textContent = '💰';
+                document.getElementById('result-text').textContent = 'HAI VINTO!';
+                document.getElementById('result-text').style.color = 'var(--neon-green)';
+            } else {
+                // Wrong answer - BANG!
+                playSound('wrong');
+                gameState.lives--;
+                
+                overlay.className = 'result-overlay show wrong';
+                asciiResult.textContent = '💥';
+                document.getElementById('result-text').textContent = 'BANG!';
+                document.getElementById('result-text').style.color = 'var(--bar-red-glow)';
+            }
+            
+            document.getElementById('result-subtext').textContent = gameState.currentNews.explanation;
+            updateUI();
+        }
+
+        function nextRound() {
+            playSound('click');
+            
+            // Hide overlay
+            document.getElementById('result-overlay').classList.remove('show');
+            
+            // Check game over
+            if (gameState.lives <= 0) {
+                showGameOver();
+                return;
+            }
+            
+            // Check victory
+            if (gameState.round >= gameState.maxRounds) {
+                showVictory();
+                return;
+            }
+            
+            // Next round
+            gameState.round++;
+            updateUI();
+            loadNews();
+        }
+
+        function showGameOver() {
+            playSound('gameover');
+            
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('gameover-screen').classList.remove('hidden');
+            document.getElementById('final-score-go').textContent = gameState.score;
+        }
+
+        function showVictory() {
+            playSound('victory');
+            
+            // Bonus points for remaining lives
+            gameState.score += gameState.lives * 200;
+            
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('victory-screen').classList.remove('hidden');
+            document.getElementById('final-score-v').textContent = gameState.score;
+        }
+
+        // ====== KEYBOARD SUPPORT ======
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                if (!document.getElementById('game-screen').classList.contains('hidden') &&
+                    !document.getElementById('result-overlay').classList.contains('show')) {
+                    makeChoice(true);
+                }
+            }
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                if (!document.getElementById('game-screen').classList.contains('hidden') &&
+                    !document.getElementById('result-overlay').classList.contains('show')) {
+                    makeChoice(false);
+                }
+            }
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (document.getElementById('result-overlay').classList.contains('show')) {
+                    nextRound();
+                } else if (!document.getElementById('start-screen').classList.contains('hidden')) {
+                    startGame();
+                }
+            }
+        });
+    </script>
 </body>
 </html>
